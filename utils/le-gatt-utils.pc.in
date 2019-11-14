@@ -1,0 +1,9 @@
+Name: le-gatt-utils
+Description: BLE GATT Utilities library
+Version: @PROJECT_VERSION@
+
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=/usr/include
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+Libs: -L${libdir} -lle-gatt-utils
+Cflags: -I${includedir}/bluetooth-le/utils/include
