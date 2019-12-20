@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2013 The Android Open Source Project
  *
@@ -210,6 +210,9 @@ class GattServer : public IServerCallback {
      * <p>The GattServerCallback#onServiceAdded callback will indicate
      * whether this service has been added successfully. Do not add another service
      * before this callback.
+     *
+     * <p> The service object is owned by the server and it's lifetime is managed by the server
+     * object. It should not be destroyed by the caller.
      *
      * @param service Service to be added to the list of services provided by this device.
      * @return true, if the request to add service has been initiated
