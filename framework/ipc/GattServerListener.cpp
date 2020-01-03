@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, The Linux Foundation. All rights reserved.
+Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -70,6 +70,10 @@ bool GattServerListener::InitialiseDBusService() {
       SD_BUS_METHOD("NotificationSent", "si", nullptr, GattServerListener::sd_NotificationSent,
           SD_BUS_VTABLE_METHOD_NO_REPLY),
       SD_BUS_METHOD("ExecuteWrite", "sa{sv}", nullptr, GattServerListener::sd_ExecuteWrite,
+          SD_BUS_VTABLE_METHOD_NO_REPLY),
+      SD_BUS_METHOD("MtuChanged", "si", nullptr, GattServerListener::sd_MtuChanged,
+          SD_BUS_VTABLE_METHOD_NO_REPLY),
+      SD_BUS_METHOD("ConnectionUpdated", "sa{sv}", nullptr, GattServerListener::sd_ConnectionUpdated,
           SD_BUS_VTABLE_METHOD_NO_REPLY),
       SD_BUS_VTABLE_END};
 
@@ -533,6 +537,70 @@ int GattServerListener::sd_ExecuteWrite(sd_bus_message *m, void *userdata, sd_bu
   return sd_bus_reply_method_return(m, NULL);
 }
 
+int GattServerListener::sd_MtuChanged(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
+{
+  ALOGI(LOGTAG " %s", __func__);
+
+  if (userdata == nullptr) {
+    ALOGE(LOGTAG " %s -> userdata pointer is null", __func__);
+    return -1;
+  }
+  // Get the server listener object from the userdata
+  GattServerListener *gatt_server_listener_ptr = static_cast<GattServerListener *>(userdata);
+
+  int result;
+  const char *deviceAddress;
+  int32_t mtu = 0;
+  result = sd_bus_message_read(m, "si", &deviceAddress, &mtu);
+
+  if (result < 0) {
+    fprintf(stderr, "Failed to parse parameters: %s\n", strerror(-result));
+    return result;
+  }
+  ALOGD(LOGTAG " %s -> deviceAddress:%s, mtu:%d", __func__, deviceAddress, mtu);
+
+  if (gatt_server_listener_ptr != nullptr) {
+    gatt_server_listener_ptr->onMtuChanged(std::string(deviceAddress), mtu);
+  }
+
+  return sd_bus_reply_method_return(m, NULL);
+}
+
+int GattServerListener::sd_ConnectionUpdated(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
+{
+  ALOGI(LOGTAG " %s", __func__);
+
+  if (userdata == nullptr) {
+    ALOGE(LOGTAG " %s -> userdata pointer is null", __func__);
+    return -1;
+  }
+  // Get the server listener object from the userdata
+  GattServerListener *gatt_server_listener_ptr = static_cast<GattServerListener *>(userdata);
+
+  const char *deviceAddress;
+  int res;
+
+  res = sd_bus_message_read(m, "s", &deviceAddress);
+  if (res < 0) {
+    fprintf(stderr, "Failed to parse parameters: %s\n", strerror(-res));
+    return res;
+  }
+
+  SdBus::ArgumentMap args;
+  res = SdBus::getArgumentsFromMessage(m, args);
+  if (res < 0) {
+    ALOGE(LOGTAG "Failed to parse GattService from message: %s\n", strerror(-res));
+    return res;
+  }
+
+  if (gatt_server_listener_ptr != nullptr) {
+    if (!gatt_server_listener_ptr->onConnectionUpdated(std::string(deviceAddress), args)) {
+      ALOGE(LOGTAG "Failed to call onDescriptorWriteRequest");
+    }
+  }
+  return sd_bus_reply_method_return(m, NULL);
+}
+
 bool GattServerListener::onDescriptorWriteRequest(const std::string &deviceAddress, SdBus::ArgumentMap &args, uint8_t *value) {
   ALOGI(LOGTAG " %s", __func__);
 
@@ -597,6 +665,45 @@ bool GattServerListener::onExecuteWrite(const std::string &deviceAddress, SdBus:
   bool execute = execute_entry->second.value_.type_bool;
 
   dbus_service_->GetGattServer()->onExecuteWrite(deviceAddress, requestId, execute);
+  return true;
+}
+
+bool GattServerListener::onMtuChanged(const std::string &deviceAddress, int32_t mtu)
+{
+  ALOGI(LOGTAG " %s", __func__);
+
+  if (dbus_service_->GetGattServer() == nullptr) {
+    ALOGE(LOGTAG " %s -> No valid registered gatt server", __func__);
+    return false;
+  }
+  dbus_service_->GetGattServer()->onMtuChanged(deviceAddress, mtu);
+  return true;
+}
+
+bool GattServerListener::onConnectionUpdated(const std::string &deviceAddress, SdBus::ArgumentMap &args)
+{
+  ALOGI(LOGTAG " %s", __func__);
+
+  if (dbus_service_->GetGattServer() == nullptr) {
+    ALOGE(LOGTAG " %s -> No valid registered gatt server", __func__);
+    return false;
+  }
+
+  auto status_entry = args.find("status");
+  auto interval_entry = args.find("interval");
+  auto latency_entry = args.find("latency");
+  auto timeout_entry = args.find("timeout");
+
+  if (status_entry == args.end() || interval_entry == args.end() || latency_entry == args.end() || timeout_entry == args.end()) {
+    ALOGE(LOGTAG "%s -> Args not passed correctly", __func__);
+    return false;
+  }
+  int status = status_entry->second.value_.type_int32;
+  int interval = interval_entry->second.value_.type_int32;
+  int latency = latency_entry->second.value_.type_int32;
+  int timeout = timeout_entry->second.value_.type_int32;
+
+  dbus_service_->GetGattServer()->onConnectionUpdated(deviceAddress, interval, latency, timeout, status);
   return true;
 }
 }  // namespace ipc

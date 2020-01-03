@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, The Linux Foundation. All rights reserved.
+Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -486,7 +486,28 @@ void GattServerListenerClient::onNotificationSent(const std::string& address, in
 }
 
 void GattServerListenerClient::onMtuChanged(const std::string& address, int32_t mtu, const std::string& service_name) {
-  ALOGW(LOGTAG " %s -> Not implemented", __func__);
+  ALOGI(LOGTAG " %s", __func__);
+  if (dbus_service_->GetSdbus() == nullptr) {
+    ALOGE(LOGTAG " sd_bus object not valid");
+    return;
+  }
+  int res;
+  res = sd_bus_call_method_async(dbus_service_->GetSdbus(),
+      nullptr,
+      service_name.c_str(),
+      GATT_SERVER_LISTENER_OBJECT_PATH,
+      GATT_SERVER_LISTENER_INTERFACE,
+      "MtuChanged",
+      nullptr,
+      nullptr,
+      "si",
+      address.c_str(),
+      mtu);
+  ALOGD(LOGTAG " %s -> sd_bus_call_method_async Called RES: %d", __func__, res);
+  if (res < 0) {
+    ALOGE(LOGTAG " Error calling Method: %d - %s\n", -res, strerror(-res));
+    return;
+  }
 }
 
 void GattServerListenerClient::onPhyUpdate(const std::string& address, int32_t txPhy, int32_t rxPhy, int32_t status, const std::string& service_name) {
@@ -498,7 +519,62 @@ void GattServerListenerClient::onPhyRead(const std::string& address, int32_t txP
 }
 
 void GattServerListenerClient::onConnectionUpdated(const std::string& address, int interval, int latency, int timeout, int status, const std::string& service_name) {
-  ALOGW(LOGTAG " %s -> Not implemented", __func__);
+  ALOGI(LOGTAG " %s", __func__);
+  if (dbus_service_->GetSdbus() == nullptr) {
+    ALOGE(LOGTAG " sd_bus object not valid");
+    return;
+  }
+
+  int res;
+  sd_bus_message *m = NULL;
+  res = sd_bus_message_new_method_call(
+      dbus_service_->GetSdbus(),
+      &m,
+      service_name.c_str(),
+      GATT_SERVER_LISTENER_OBJECT_PATH,
+      GATT_SERVER_LISTENER_INTERFACE,
+      "ConnectionUpdated");
+  if (res < 0) {
+    ALOGE(LOGTAG " Error creating new method call: %d - %s\n", -res, strerror(-res));
+    return;
+  }
+
+  res = sd_bus_message_append(m, "s", address.c_str());
+  // Create arguments map/
+  SdBus::ArgumentMap args;
+
+  SdBus::SdbusArgument status_arg;
+  status_arg.type_ = SdBus::SdbusArgument::INT32;
+  status_arg.value_.type_int32 = status;
+  args["status"] = status_arg;
+
+  SdBus::SdbusArgument interval_arg;
+  interval_arg.type_ = SdBus::SdbusArgument::INT32;
+  interval_arg.value_.type_int32 = interval;
+  args["interval"] = interval_arg;
+
+  SdBus::SdbusArgument latency_arg;
+  latency_arg.type_ = SdBus::SdbusArgument::INT32;
+  latency_arg.value_.type_int32 = latency;
+  args["latency"] = latency_arg;
+
+  SdBus::SdbusArgument timeout_arg;
+  timeout_arg.type_ = SdBus::SdbusArgument::INT32;
+  timeout_arg.value_.type_int32 = timeout;
+  args["timeout"] = timeout_arg;
+
+  res = SdBus::PopulateArgumentMessage(m, args);
+  if (res < 0) {
+    ALOGE(LOGTAG " Error Populating sd_bus message with Arguments");
+    return;
+  }
+
+  res = sd_bus_call_async(dbus_service_->GetSdbus(), nullptr, m, nullptr, nullptr, 0);
+
+  if (res < 0) {
+    ALOGE(LOGTAG " Error calling Method: %d - %s\n", -res, strerror(-res));
+    return;
+  }
 }
 }  // namespace ipc
 }  // namespace gatt

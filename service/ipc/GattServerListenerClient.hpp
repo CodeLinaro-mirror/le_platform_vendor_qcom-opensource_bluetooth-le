@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, The Linux Foundation. All rights reserved.
+Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -60,13 +60,13 @@ class GattServerListenerClient final {
         int32_t handle, uint8_t *value, const std::string& service_name);
     void onExecuteWrite(const std::string& address, int32_t transId, bool execWrite, const std::string& service_name);
     void onNotificationSent(const std::string& address, int32_t status, const std::string& service_name);
-
-    // Methods not implemented:
     void onMtuChanged(const std::string& address, int32_t mtu, const std::string& service_name);
-    void onPhyUpdate(const std::string& address, int32_t txPhy, int32_t rxPhy, int32_t status, const std::string& service_name);
-    void onPhyRead(const std::string& address, int32_t txPhy, int32_t rxPhy, int32_t status, const std::string& service_name);
     void onConnectionUpdated(const std::string& address, int32_t interval, int32_t latency,
         int32_t timeout, int32_t status, const std::string& service_name);
+
+    // Methods not implemented:
+    void onPhyUpdate(const std::string& address, int32_t txPhy, int32_t rxPhy, int32_t status, const std::string& service_name);
+    void onPhyRead(const std::string& address, int32_t txPhy, int32_t rxPhy, int32_t status, const std::string& service_name);
 
   private:
   GattDBusService *dbus_service_;
