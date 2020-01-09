@@ -73,7 +73,7 @@ Uuid Uuid::FromString(const std::string& uuid, bool* is_valid) {
                &p[0], &p[1], &p[2], &p[3], &p[4], &p[5], &p[6], &p[7], &p[8],
                &p[9], &p[10], &p[11], &p[12], &p[13], &p[14], &p[15], &c);
     if (rc != 16) return ret;
-    if (c != '\0') return ret;
+    // if (c != '\0') return ret; // TODO: Why was this check needed at all?
 
     if (is_valid) *is_valid = true;
   } else if (uuid.size() == 8) {

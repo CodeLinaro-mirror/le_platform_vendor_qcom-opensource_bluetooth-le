@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -25,7 +25,7 @@
 #include "IGattNativeV2.hpp"
 #include "GattDBusService.hpp"
 
-#define LOGTAG "GattLibService"
+#define LOGTAG "GattLibService "
 
 using namespace std;
 
@@ -1437,6 +1437,7 @@ void GattLibService::GattLibServiceThread() {
     auto  event = mEventQ.remove();
     if (event->event_id != EXIT) {
       ProcessEvent(event);
+      delete event;
     }
     else {
       running = false;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, The Linux Foundation. All rights reserved.
+Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -31,14 +31,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GattDBusService.hpp"
 #include "BluetoothLeSdbus.hpp"
 
-#define LOGTAG "GattLeAdvertiserManager"
+#define LOGTAG "GattLeAdvertiserManager "
 
 #define TYPE_TO_STR(...) ((const char[]){__VA_ARGS__, 0})
 namespace gatt {
 namespace ipc {
 GattLeAdvertiserManager::GattLeAdvertiserManager(GattDBusService *dbus_service)
     : gatt_dbus_service_(dbus_service) {
-  ALOGD(LOGTAG " %s", __func__);
+  ALOGI(LOGTAG " %s", __func__);
 }
 
 GattLeAdvertiserManager::~GattLeAdvertiserManager() {
@@ -471,7 +471,6 @@ int GattLeAdvertiserManager::sd_isLePeriodicAdvertisingSupported(sd_bus *bus, co
 
 int GattLeAdvertiserManager::sd_getLeMaximumAdvertisingDataLength(sd_bus *bus, const char *path, const char *interface, const char *property,
                                                     sd_bus_message *reply, void *userdata, sd_bus_error *ret_error) {
-
   ALOGI(LOGTAG " %s", __func__);
   GattLeAdvertiserManager *advManager = static_cast<GattLeAdvertiserManager *>(userdata);
   return sd_bus_message_append(reply, TYPE_TO_STR(SD_BUS_TYPE_INT32),
@@ -482,8 +481,7 @@ int GattLeAdvertiserManager::sd_getDeviceName(sd_bus *bus, const char *path, con
                                 sd_bus_message *reply, void *userdata, sd_bus_error *ret_error) {
   ALOGI(LOGTAG " %s", __func__);
   GattLeAdvertiserManager *advManager = static_cast<GattLeAdvertiserManager *>(userdata);
-  return sd_bus_message_append_basic(reply, SD_BUS_TYPE_STRING,
-                                     advManager->gatt_dbus_service_->GetGattLibService()->getDeviceName().c_str());
+  return sd_bus_message_append_basic(reply, SD_BUS_TYPE_STRING, advManager->bdName_.c_str());
 }
 
 int GattLeAdvertiserManager::UpdateLocalLeFeaturesProperties() {
@@ -497,6 +495,7 @@ int GattLeAdvertiserManager::UpdateLocalLeFeaturesProperties() {
 
 int GattLeAdvertiserManager::UpdateDeviceNameProperty() {
   ALOGI(LOGTAG " %s", __func__);
+  bdName_ = gatt_dbus_service_->GetGattLibService()->getDeviceName();
   return  sd_bus_emit_properties_changed(gatt_dbus_service_->GetSdbus(),
                                          GATT_SERVER_ADVERTISER_MANAGER_OBJECT_PATH,
                                          GATT_SERVER_ADVERTISER_MANAGER_INTERFACE,
