@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, The Linux Foundation. All rights reserved.
+Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -65,6 +65,8 @@ class GattServerListener {
   static int sd_DescriptorWriteRequest(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
   static int sd_NotificationSent(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
   static int sd_ExecuteWrite(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
+  static int sd_MtuChanged(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
+  static int sd_ConnectionUpdated(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
 
   bool onServerRegistered(int32_t status, int32_t serverId);
   bool onServiceAdded(int32_t status, GattService* gatt_service);
@@ -75,6 +77,9 @@ class GattServerListener {
   bool onDescriptorWriteRequest(const std::string& deviceAddress, SdBus::ArgumentMap& args, uint8_t *value);
   bool onNotificationSent(const std::string& deviceAddress, int32_t status);
   bool onExecuteWrite(const std::string& deviceAddress, SdBus::ArgumentMap& args);
+  bool onMtuChanged(const std::string& deviceAddress, int32_t mtu);
+  bool onConnectionUpdated(const std::string& deviceAddress, SdBus::ArgumentMap& args);
+
 };
 } // namespace ipc
 } // namespace gatt
