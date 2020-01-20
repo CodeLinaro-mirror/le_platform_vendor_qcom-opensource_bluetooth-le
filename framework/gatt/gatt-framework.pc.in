@@ -1,0 +1,9 @@
+Name: gatt-framework
+Description: GATT Framework library
+Version: @PROJECT_VERSION@
+
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=/usr/include
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+Libs: -L${libdir} -lgatt-framework -llog
+Cflags: -I${includedir}/bluetooth-le/framework

@@ -1,0 +1,9 @@
+Name: le-gatt-service
+Description: BLE GATT Service library
+Version: @PROJECT_VERSION@
+
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=/usr/include
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+Libs: -L${libdir} -lle-gatt-service
+Cflags: -I${includedir}/bluetooth-le/native/ -I${includedir}/bluetooth-le/service/
