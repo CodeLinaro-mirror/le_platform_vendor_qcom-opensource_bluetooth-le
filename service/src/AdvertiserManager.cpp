@@ -148,7 +148,7 @@ void AdvertiserManager::startAdvertisingSet(AdvertisingSetParameters& parameters
                                                   const string &sender)
 {
   if (DBG) {
-    ALOGD(LOGTAG " startAdvertisingSet");
+    ALOGD(LOGTAG " startAdvertisingSet -> sender: %s", sender.c_str());
   }
   GattLibService *mGatt = GattLibService::getGatt();
   if(mGatt == NULL) return;
@@ -190,6 +190,7 @@ void AdvertiserManager::stopAdvertisingSet(const string &sender)
 
   std::unordered_map<int,string>::iterator it = mAdvertiser_listeners.begin();
   for(; it != mAdvertiser_listeners.end(); ++it) {
+    ALOGD(LOGTAG " stopAdvertisingSet(): mAdvertiser_listeners[] %s ", it->second.c_str());
     if ((it->second) == sender) {
       break;
     }
@@ -209,15 +210,18 @@ void AdvertiserManager::stopAdvertisingSet(const string &sender)
 
   mNative->stopAdvertisingSetNative(advertiserId);
 
+  // Delete the entry from the map.
+  mAdvertiser_listeners.erase(advertiserId);
+
   if (mAdvertisingCb_ == NULL) {
       mAdvertisingCb_ = GattDBusService::getGattDBusProxy()->gattLeAdvertising();
     if (mAdvertisingCb_ == NULL) {
       ALOGE(LOGTAG " Failed to get Bluetooth gatt - NULL ");
       return;
     }
-    if (!mAdvertisingCb_->AdvertisingSetStopped(sender, advertiserId)) {
-      ALOGE(LOGTAG " Error sending AdvertisingSetStopped callback");
-    }
+  }
+  if (!mAdvertisingCb_->AdvertisingSetStopped(sender, advertiserId)) {
+    ALOGE(LOGTAG " Error sending AdvertisingSetStopped callback");
   }
 }
 
@@ -285,6 +289,10 @@ void AdvertiserManager::stopAdvertisingSets()
     }
 
     mNative->stopAdvertisingSetNative(advertiser_id);
+
+    // Delete the entry from the map.
+    mAdvertiser_listeners.erase(advertiser_id);
+
     auto sender  = it->second;
     if (!mAdvertisingCb_->AdvertisingSetStopped(sender, advertiser_id)) {
       ALOGE(LOGTAG " Failed calling AdvertisingSetStopped");
