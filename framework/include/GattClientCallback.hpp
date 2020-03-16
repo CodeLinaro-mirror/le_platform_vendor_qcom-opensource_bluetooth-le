@@ -22,6 +22,7 @@
 #pragma once
 
 #include "GattService.hpp"
+#include "common.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ class GattClientCallback {
     * @param status Status of the PHY update operation.  GattClient#GATT_SUCCESS if the
     * operation succeeds.
     */
-    virtual void onPhyUpdate(GattClient *gatt, int txPhy, int rxPhy, int status) {}
+    virtual void onPhyUpdate(GattClient *UNUSED(gatt), int UNUSED(txPhy), int UNUSED(rxPhy), int UNUSED(status)) {}
 
     /**
     * Callback triggered as result of GattClient#readPhy
@@ -54,7 +55,7 @@ class GattClientCallback {
     * @param status Status of the PHY read operation. GattClient#GATT_SUCCESS if the
     * operation succeeds.
     */
-    virtual void onPhyRead(GattClient *gatt, int txPhy, int rxPhy, int status) {}
+    virtual void onPhyRead(GattClient *UNUSED(gatt), int UNUSED(txPhy), int UNUSED(rxPhy), int UNUSED(status)) {}
 
 
     /**
@@ -67,7 +68,7 @@ class GattClientCallback {
     * @param newState Returns the new connection state. Can be one of
     * GattDevice::STATE_DISCONNECTED or GattDevice::STATE_CONNECTED
     */
-    virtual void onConnectionStateChange(GattClient *gatt, int status,int newState) {}
+    virtual void onConnectionStateChange(GattClient *UNUSED(gatt), int UNUSED(status),int UNUSED(newState)) {}
 
     /**
     * Callback invoked when the list of remote services, characteristics and descriptors
@@ -77,7 +78,7 @@ class GattClientCallback {
     * @param status GattClient#GATT_SUCCESS if the remote device has been explored
     * successfully.
     */
-    virtual void onServicesDiscovered(GattClient *gatt, int status) {}
+    virtual void onServicesDiscovered(GattClient *UNUSED(gatt), int UNUSED(status)) {}
 
     /**
     * Callback reporting the result of a characteristic read operation.
@@ -87,8 +88,8 @@ class GattClientCallback {
     * @param status GattClient#GATT_SUCCESS if the read operation was completed
     * successfully.
     */
-    virtual void onCharacteristicRead(GattClient *gatt, GattCharacteristic *characteristic,
-    int status) {}
+    virtual void onCharacteristicRead(GattClient *UNUSED(gatt), GattCharacteristic *UNUSED(characteristic),
+    int UNUSED(status)) {}
 
     /**
     * Callback indicating the result of a characteristic write operation.
@@ -104,8 +105,8 @@ class GattClientCallback {
     * @param status The result of the write operation GattClient#GATT_SUCCESS if the
     * operation succeeds.
     */
-    virtual void onCharacteristicWrite(GattClient *gatt,
-                                              GattCharacteristic *characteristic, int status) {}
+    virtual void onCharacteristicWrite(GattClient *UNUSED(gatt),
+                                              GattCharacteristic *UNUSED(characteristic), int UNUSED(status)) {}
 
     /**
     * Callback triggered as a result of a remote characteristic notification.
@@ -114,8 +115,8 @@ class GattClientCallback {
     * @param characteristic Characteristic that has been updated as a result of a remote
     * notification event.
     */
-    virtual void onCharacteristicChanged(GattClient *gatt,
-                                                GattCharacteristic *characteristic) {}
+    virtual void onCharacteristicChanged(GattClient *UNUSED(gatt),
+                                                GattCharacteristic *UNUSED(characteristic)) {}
 
     /**
     * Callback reporting the result of a descriptor read operation.
@@ -125,8 +126,8 @@ class GattClientCallback {
     * @param status GattClient#GATT_SUCCESS if the read operation was completed
     * successfully
     */
-    virtual void onDescriptorRead(GattClient *gatt,
-                                       GattDescriptor *descriptor, int status) {}
+    virtual void onDescriptorRead(GattClient *UNUSED(gatt),
+                                       GattDescriptor *UNUSED(descriptor), int UNUSED(status)) {}
 
     /**
     * Callback indicating the result of a descriptor write operation.
@@ -136,8 +137,8 @@ class GattClientCallback {
     * @param status The result of the write operation GattClient#GATT_SUCCESS if the
     * operation succeeds.
     */
-    virtual void onDescriptorWrite(GattClient *gatt,
-                                        GattDescriptor *descriptor, int status) {}
+    virtual void onDescriptorWrite(GattClient *UNUSED(gatt),
+                                        GattDescriptor *UNUSED(descriptor), int UNUSED(status)) {}
 
     /**
     * Callback invoked when a reliable write transaction has been completed.
@@ -146,8 +147,8 @@ class GattClientCallback {
     * @param status GattClient#GATT_SUCCESS if the reliable write transaction was
     * executed successfully
     */
-    virtual void onReliableWriteCompleted(GattClient *gatt,
-                                                  int status) {}
+    virtual void onReliableWriteCompleted(GattClient *UNUSED(gatt),
+                                                  int UNUSED(status)) {}
 
     /**
     * Callback reporting the RSSI for a remote device connection.
@@ -159,7 +160,7 @@ class GattClientCallback {
     * @param rssi The RSSI value for the remote device
     * @param status GattClient#GATT_SUCCESS if the RSSI was read successfully
     */
-    virtual void onReadRemoteRssi(GattClient *gatt , int rssi, int status) {}
+    virtual void onReadRemoteRssi(GattClient *UNUSED(gatt) , int UNUSED(rssi), int UNUSED(status)) {}
 
     /**
     * Callback indicating the MTU for a given device connection has changed.
@@ -172,7 +173,7 @@ class GattClientCallback {
     * @param mtu The new MTU size
     * @param status GattClient#GATT_SUCCESS if the MTU has been changed successfully
     */
-    virtual void onMtuChanged(GattClient *gatt, int mtu, int status) {}
+    virtual void onMtuChanged(GattClient *UNUSED(gatt), int UNUSED(mtu), int UNUSED(status)) {}
 
     /**
     * Callback indicating the connection parameters were updated.
@@ -188,8 +189,8 @@ class GattClientCallback {
     * successfully
     * @hide
     */
-    virtual void onConnectionUpdated(GattClient *gatt, int interval, int latency,
-                                                              int timeout, int status) {}
+    virtual void onConnectionUpdated(GattClient * UNUSED(gatt), int UNUSED(interval), int UNUSED(latency),
+                                                              int UNUSED(timeout), int UNUSED(status)) {}
 
 };
 }

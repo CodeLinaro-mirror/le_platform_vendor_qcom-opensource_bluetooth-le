@@ -22,6 +22,7 @@
 #include "GattService.hpp"
 #include "GattDescriptor.hpp"
 #include "GattCharacteristic.hpp"
+#include "common.h"
 
 using namespace std;
 using std::string;
@@ -41,8 +42,8 @@ class GattServerCallback {
      * @param newState Returns the new connection state. Can be one of
      * GattDevice#STATE_DISCONNECTED or GattDevice#STATE_CONNECTED
      */
-    virtual void onConnectionStateChange(string deviceAddress, int status,
-                                       int newState){}
+    virtual void onConnectionStateChange(string UNUSED(deviceAddress), int UNUSED(status),
+                                       int UNUSED(newState)){}
 
     /**
      * Indicates whether a local service has been added successfully.
@@ -51,7 +52,7 @@ class GattServerCallback {
      * successfully.
      * @param service The service that has been added
      */
-    virtual void onServiceAdded(int status, GattService *service){}
+    virtual void onServiceAdded(int UNUSED(status), GattService *UNUSED(service)){}
 
     /**
      * A remote client has requested to read a local characteristic.
@@ -64,8 +65,8 @@ class GattServerCallback {
      * @param offset Offset into the value of the characteristic
      * @param characteristic Characteristic to be read
      */
-    virtual void onCharacteristicReadRequest(string deviceAddress, int requestId,
-                                            int offset, GattCharacteristic *characteristic){}
+    virtual void onCharacteristicReadRequest(string UNUSED(deviceAddress), int UNUSED(requestId),
+                                            int UNUSED(offset), GattCharacteristic *UNUSED(characteristic)){}
     /**
      * A remote client has requested to write to a local characteristic.
      *
@@ -80,10 +81,10 @@ class GattServerCallback {
      * @param offset The offset given for the value
      * @param value The value the client wants to assign to the characteristic
      */
-    virtual void onCharacteristicWriteRequest(string deviceAddress, int requestId,
-                                              GattCharacteristic *characteristic,
-                                              bool preparedWrite, bool responseNeeded,
-                                              int offset, uint8_t *value, int length){}
+    virtual void onCharacteristicWriteRequest(string UNUSED(deviceAddress), int UNUSED(requestId),
+                                              GattCharacteristic *UNUSED(characteristic),
+                                              bool UNUSED(preparedWrite), bool UNUSED(responseNeeded),
+                                              int UNUSED(offset), uint8_t *UNUSED(value), int UNUSED(length)){}
 
     /**
      * A remote client has requested to read a local descriptor.
@@ -96,8 +97,8 @@ class GattServerCallback {
      * @param offset Offset into the value of the characteristic
      * @param descriptor Descriptor to be read
      */
-    virtual void onDescriptorReadRequest(string deviceAddress, int requestId,
-                                       int offset, GattDescriptor *descriptor){}
+    virtual void onDescriptorReadRequest(string UNUSED(deviceAddress), int UNUSED(requestId),
+                                       int UNUSED(offset), GattDescriptor *UNUSED(descriptor)){}
 
     /**
      * A remote client has requested to write to a local descriptor.
@@ -113,10 +114,10 @@ class GattServerCallback {
      * @param offset The offset given for the value
      * @param value The value the client wants to assign to the descriptor
      */
-    virtual void onDescriptorWriteRequest(string deviceAddress, int requestId,
-                                        GattDescriptor *descriptor,
-                                        bool preparedWrite, bool responseNeeded,
-                                        int offset, uint8_t *value, int length){}
+    virtual void onDescriptorWriteRequest(string UNUSED(deviceAddress), int UNUSED(requestId),
+                                        GattDescriptor *UNUSED(descriptor),
+                                        bool UNUSED(preparedWrite), bool UNUSED(responseNeeded),
+                                        int UNUSED(offset), uint8_t *UNUSED(value), int UNUSED(length)){}
     /**
      * Execute all pending write operations for this device.
      *
@@ -127,7 +128,7 @@ class GattServerCallback {
      * @param requestId The Id of the request
      * @param execute Whether the pending writes should be executed (true) or cancelled (false)
      */
-    virtual void onExecuteWrite(string deviceAddress, int requestId, bool execute){}
+    virtual void onExecuteWrite(string UNUSED(deviceAddress), int UNUSED(requestId), bool UNUSED(execute)){}
 
     /**
      * Callback invoked when a notification or indication has been sent to
@@ -140,7 +141,7 @@ class GattServerCallback {
      * @param device The remote device the notification has been sent to
      * @param status GattClient#GATT_SUCCESS if the operation was successful
      */
-    virtual void onNotificationSent(string deviceAddress, int status){}
+    virtual void onNotificationSent(string UNUSED(deviceAddress), int UNUSED(status)){}
 
     /**
      * Callback indicating the MTU for a given device connection has changed.
@@ -151,7 +152,7 @@ class GattServerCallback {
      * @param device The remote device that requested the MTU change
      * @param mtu The new MTU size
      */
-    virtual void onMtuChanged(string deviceAddress, int mtu){}
+    virtual void onMtuChanged(string UNUSED(deviceAddress), int UNUSED(mtu)){}
 
     /**
      * Callback triggered as result of GattServer#setPreferredPhy, or as a result
@@ -165,7 +166,7 @@ class GattServerCallback {
      * @param status Status of the PHY update operation. GattClient#GATT_SUCCESS if the
      * operation succeeds.
      */
-    virtual void onPhyUpdate(string deviceAddress, int txPhy, int rxPhy, int status){}
+    virtual void onPhyUpdate(string UNUSED(deviceAddress), int UNUSED(txPhy), int UNUSED(rxPhy), int UNUSED(status)){}
 
     /**
      * Callback triggered as result of GattServer#readPhy
@@ -178,7 +179,7 @@ class GattServerCallback {
      * @param status Status of the PHY read operation. GattClient#GATT_SUCCESS if the
      * operation succeeds.
      */
-    virtual void onPhyRead(string deviceAddress, int txPhy, int rxPhy, int status){}
+    virtual void onPhyRead(string UNUSED(deviceAddress), int UNUSED(txPhy), int UNUSED(rxPhy), int UNUSED(status)){}
 
     /**
      * Callback indicating the connection parameters were updated.
@@ -194,8 +195,8 @@ class GattServerCallback {
      * successfully
      * @hide
      */
-    virtual void onConnectionUpdated(string deviceAddress, int interval,
-                                  int latency, int timeout, int status){}
+    virtual void onConnectionUpdated(string UNUSED(deviceAddress), int UNUSED(interval),
+                                  int UNUSED(latency), int UNUSED(timeout), int UNUSED(status)){}
 
 };
 }

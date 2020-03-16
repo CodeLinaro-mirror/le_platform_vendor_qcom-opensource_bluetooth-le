@@ -21,6 +21,7 @@
 #pragma once
 
 #include "ScanResult.hpp"
+#include "common.h"
 #include <vector>
 using namespace std;
 using std::string;
@@ -75,21 +76,21 @@ class ScanCallback {
      * ScanSettings#CALLBACK_TYPE_MATCH_LOST
      * @param result A Bluetooth LE scan result.
      */
-    virtual void onScanResult(int callbackType, ScanResult *result){}
+    virtual void onScanResult(int UNUSED(callbackType), ScanResult *UNUSED(result)){}
 
     /**
      * Callback when batch results are delivered.
      *
      * @param results List of scan results that are previously scanned.
      */
-    virtual void onBatchScanResults(std::vector<ScanResult*> results){}
+    virtual void onBatchScanResults(std::vector<ScanResult*> UNUSED(results)){}
 
     /**
      * Callback when scan could not be started.
      *
      * @param errorCode Error code (one of SCAN_FAILED_*) for scan failure.
      */
-    virtual void onScanFailed(int errorCode){}
+    virtual void onScanFailed(int UNUSED(errorCode)){}
 };
 
 }//namespace gatt

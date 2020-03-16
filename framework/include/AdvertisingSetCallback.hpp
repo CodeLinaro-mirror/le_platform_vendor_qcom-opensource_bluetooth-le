@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include "common.h"
 
 using namespace std;
 using std::string;
@@ -76,7 +77,7 @@ class AdvertisingSetCallback {
      * @param txPower tx power that will be used for this set.
      * @param status Status of the operation.
      */
-    virtual void onAdvertisingSetStarted(AdvertisingSet *advertisingSet, int txPower, int status){};
+    virtual void onAdvertisingSetStarted(AdvertisingSet *UNUSED(advertisingSet), int UNUSED(txPower), int UNUSED(status)){};
 
     /**
      * Callback triggered in response to GattLeAdvertiser#stopAdvertisingSet
@@ -84,7 +85,7 @@ class AdvertisingSetCallback {
      *
      * @param advertisingSet The advertising set.
      */
-    virtual void onAdvertisingSetStopped(AdvertisingSet *advertisingSet){};
+    virtual void onAdvertisingSetStopped(AdvertisingSet *UNUSED(advertisingSet)){};
 
     /**
      * Callback triggered in response to GattLeAdvertiser#startAdvertisingSet
@@ -94,7 +95,7 @@ class AdvertisingSetCallback {
      * @param advertisingSet The advertising set.
      * @param status Status of the operation.
      */
-    virtual void onAdvertisingEnabled(AdvertisingSet *advertisingSet, bool enable, int status){};
+    virtual void onAdvertisingEnabled(AdvertisingSet *UNUSED(advertisingSet), bool UNUSED(enable), int UNUSED(status)){};
 
     /**
      * Callback triggered in response to AdvertisingSet#setAdvertisingData indicating
@@ -103,7 +104,7 @@ class AdvertisingSetCallback {
      * @param advertisingSet The advertising set.
      * @param status Status of the operation.
      */
-    virtual void onAdvertisingDataSet(AdvertisingSet *advertisingSet, int status){};
+    virtual void onAdvertisingDataSet(AdvertisingSet *UNUSED(advertisingSet), int UNUSED(status)){};
 
     /**
      * Callback triggered in response to AdvertisingSet#setAdvertisingData indicating
@@ -112,7 +113,7 @@ class AdvertisingSetCallback {
      * @param advertisingSet The advertising set.
      * @param status Status of the operation.
      */
-    virtual void onScanResponseDataSet(AdvertisingSet *advertisingSet, int status){};
+    virtual void onScanResponseDataSet(AdvertisingSet *UNUSED(advertisingSet), int UNUSED(status)){};
 
     /**
      * Callback triggered in response to AdvertisingSet#setAdvertisingParameters
@@ -122,8 +123,8 @@ class AdvertisingSetCallback {
      * @param txPower tx power that will be used for this set.
      * @param status Status of the operation.
      */
-    virtual void onAdvertisingParametersUpdated(AdvertisingSet *advertisingSet,
-            int txPower, int status){};
+    virtual void onAdvertisingParametersUpdated(AdvertisingSet *UNUSED(advertisingSet),
+            int UNUSED(txPower), int UNUSED(status)){};
 
     /**
      * Callback triggered in response to AdvertisingSet#setPeriodicAdvertisingParameters
@@ -132,8 +133,8 @@ class AdvertisingSetCallback {
      * @param advertisingSet The advertising set.
      * @param status Status of the operation.
      */
-    virtual void onPeriodicAdvertisingParametersUpdated(AdvertisingSet *advertisingSet,
-                    int status){};
+    virtual void onPeriodicAdvertisingParametersUpdated(AdvertisingSet *UNUSED(advertisingSet),
+                    int UNUSED(status)){};
     /**
      * Callback triggered in response to AdvertisingSet#setPeriodicAdvertisingData
      * indicating result of the operation.
@@ -141,8 +142,8 @@ class AdvertisingSetCallback {
      * @param advertisingSet The advertising set.
      * @param status Status of the operation.
      */
-    virtual void onPeriodicAdvertisingDataSet(AdvertisingSet *advertisingSet,
-            int status){};
+    virtual void onPeriodicAdvertisingDataSet(AdvertisingSet *UNUSED(advertisingSet),
+            int UNUSED(status)){};
 
     /**
      * Callback triggered in response to AdvertisingSet#setPeriodicAdvertisingEnabled
@@ -151,8 +152,8 @@ class AdvertisingSetCallback {
      * @param advertisingSet The advertising set.
      * @param status Status of the operation.
      */
-    virtual void onPeriodicAdvertisingEnabled(AdvertisingSet *advertisingSet, bool enable,
-            int status){};
+    virtual void onPeriodicAdvertisingEnabled(AdvertisingSet *UNUSED(advertisingSet), bool UNUSED(enable),
+            int UNUSED(status)){};
 
     /**
      * Callback triggered in response to AdvertisingSet#getOwnAddress()
@@ -163,8 +164,8 @@ class AdvertisingSetCallback {
      * @param address advertising set bluetooth address.
      * @hide
      */
-    virtual void onOwnAddressRead(AdvertisingSet *advertisingSet, int addressType,
-      string address){};
+    virtual void onOwnAddressRead(AdvertisingSet *UNUSED(advertisingSet), int UNUSED(addressType),
+      string UNUSED(address)){};
 
      /**
      * Callback triggered in response to {@link BluetoothLeAdvertiser#startAdvertising} indicating
@@ -173,7 +174,7 @@ class AdvertisingSetCallback {
      * @param settingsInEffect The actual settings used for advertising, which may be different from
      * what has been requested.
      */
-    virtual void onStartSuccess(AdvertiseSettings *settingsInEffect){};
+    virtual void onStartSuccess(AdvertiseSettings *UNUSED(settingsInEffect)){};
 
     /**
      * Callback when advertising could not be started.
@@ -181,7 +182,7 @@ class AdvertisingSetCallback {
      * @param errorCode Error code (see ADVERTISE_FAILED_* constants) for advertising start
      * failures.
      */
-    virtual void onStartFailure(int errorCode){};
+    virtual void onStartFailure(int UNUSED(errorCode)){};
 };
 }//namespace gatt
 #endif

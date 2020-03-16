@@ -137,7 +137,7 @@ class GattLibService           {
     /**
      * Server handle map.
      */
-    HandleMap *mHandleMap = new HandleMap();;
+    HandleMap *mHandleMap = new HandleMap();
     std::vector<Uuid> mAdvertisingServiceUuids;
 
     int mMaxScanFilters = 0;
