@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -146,7 +146,6 @@ class GattLibService           {
 
     AdvertiserManager *mAdvertiserManager = NULL;
     ScanManager *mScanManager = NULL;
-    GattDevice *mGattDevice = NULL;
     PeriodicScanManager *mPeriodicScanManager = NULL;
 
 	// DBus i/f

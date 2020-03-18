@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -329,11 +329,6 @@ void ScanManager::ScanNative::cleanup()
   mAllPassBatchClients.clear();
   mFilterIndexStack.clear();
   sManager = NULL;
-
-  if(mGattDevice != NULL) {
-    delete(mGattDevice);
-  mGattDevice = NULL;
-  }
 }
 
 ScanManager::ScanNative::~ScanNative()
@@ -352,8 +347,6 @@ ScanManager::ScanNative::ScanNative(ScanManager *scanManager)
             it != scanManager->mBatchClients.end(); ++it){
     sManager->flushBatchScanResults(*it);
   }
-
-  mGattDevice = new GattDevice();
 }
 
 void ScanManager::ScanNative::configureRegularScanParams()

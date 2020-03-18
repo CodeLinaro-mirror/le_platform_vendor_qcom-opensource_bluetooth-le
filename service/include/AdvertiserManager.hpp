@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
 * Not a Contribution.
 * Copyright (C) 2017 The Android Open Source Project
 *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "GattDevice.hpp"
 #include "AdvertiseHelper.hpp"
 #include "AdvertisingSetParameters.hpp"
 #include "PeriodicAdvertiseParameters.hpp"
@@ -55,7 +54,6 @@ class AdvertiserManager {
     GattLeAdvertising* mAdvertisingCb_ = nullptr;
 
     IGattNativeV2 *mNative = NULL;
-    GattDevice *mGattDevice = NULL;
 
   public:
     /**
@@ -63,7 +61,6 @@ class AdvertiserManager {
      */
     AdvertiserManager(IGattNativeV2 *mGattIf);
     ~AdvertiserManager();
-    void start();
     void cleanup();
     advertise_parameters_t parseParams(AdvertisingSetParameters *parameters);
     periodic_advertising_parameters_t parsePeriodicParams(PeriodicAdvertiseParameters *parameter);

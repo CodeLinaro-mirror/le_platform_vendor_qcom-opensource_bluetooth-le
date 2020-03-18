@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
 * Not a Contribution.
 * Copyright (C) 2017 The Android Open Source Project
 *
@@ -42,11 +42,6 @@ AdvertiserManager::AdvertiserManager(IGattNativeV2 *mGattIf)
   mNative = mGattIf;
 }
 
-void AdvertiserManager::start()
-{
-  mGattDevice = new GattDevice();
-}
-
 void AdvertiserManager::cleanup()
 {
   if (DBG) {
@@ -56,11 +51,8 @@ void AdvertiserManager::cleanup()
   // mAdvertisers.clear();    // TODO: What was the problem here?
   sTempRegistrationId = -1;
   mNative = NULL;
-  if(mGattDevice) {
-    delete(mGattDevice);
-    mGattDevice = NULL;
-  }
 }
+
 AdvertiserManager::~AdvertiserManager()
 {
   this->cleanup();
