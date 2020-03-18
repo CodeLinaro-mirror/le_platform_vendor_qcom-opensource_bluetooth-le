@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -138,7 +138,6 @@ class ScanManager {
         std::mutex trackAdvLock;
 
         ScanManager *sManager;
-        GattDevice *mGattDevice;
 
       public:
         PhyInfo* getPhyInfo(std::unordered_set<ScanClient*> cList);

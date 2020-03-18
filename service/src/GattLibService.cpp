@@ -1455,7 +1455,6 @@ GattLibService::GattLibService(IGattNativeV2* nt_if) : mNative(nt_if)
     ALOGE(LOGTAG "Gatt Native Interface init failed");
     return;
   }
-  mGattDevice = new GattDevice();
   mAdvertiserManager = new AdvertiserManager(mNative);
   mScanManager = new ScanManager(mNative);
   mPeriodicScanManager = new PeriodicScanManager(mNative);
@@ -1473,7 +1472,6 @@ void GattLibService::start()
   } else {
     ALOGD(LOGTAG "%s -> Could not acquire DBus proxy", __func__);
   }
-  mAdvertiserManager->start();
 
   if (!mScanManager) return;
   mScanManager->start();
@@ -1498,11 +1496,6 @@ void GattLibService::cleanup()
   if (mGattThread.joinable()) {
     mGattThread.join();
   }
-
-  if(mGattDevice != NULL) {
-    delete(mGattDevice);
-  }
-  mGattDevice = NULL;
 
   if(mAdvertiserManager != NULL) {
     delete(mAdvertiserManager);
