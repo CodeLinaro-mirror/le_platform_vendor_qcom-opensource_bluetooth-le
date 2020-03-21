@@ -140,7 +140,7 @@ class GattLibService           {
     HandleMap *mHandleMap = new HandleMap();;
     std::vector<Uuid> mAdvertisingServiceUuids;
 
-    int mMaxScanFilters;
+    int mMaxScanFilters = 0;
 
     std::unordered_map<int, std::vector<GattService*>> mGattClientDatabases;
 
@@ -148,7 +148,7 @@ class GattLibService           {
     ScanManager *mScanManager = NULL;
     PeriodicScanManager *mPeriodicScanManager = NULL;
 
-	// DBus i/f
+    // DBus i/f
     std::shared_ptr<GattDBusService> mProxyService;
 
     static GattLibService* volatile sGattService;
@@ -163,27 +163,27 @@ class GattLibService           {
     static const int MIN_OFFLOADED_FILTERS = 10;
     static const int MIN_OFFLOADED_SCAN_STORAGE_BYTES = 1024;
 
-    int mNumOfAdvertisementInstancesSupported;
-    bool mRpaOffloadSupported;
-    int mNumOfOffloadedIrkSupported;
-    int mNumOfOffloadedScanFilterSupported;
-    int mOffloadedScanResultStorageBytes;
-    int mVersSupported;
-    int mTotNumOfTrackableAdv;
-    bool mIsExtendedScanSupported;
-    bool mIsDebugLogSupported;
-    bool mIsActivityAndEnergyReporting;
-    bool mIsLe2MPhySupported;
-    bool mIsLeCodedPhySupported;
-    bool mIsLeExtendedAdvertisingSupported;
-    bool mIsLePeriodicAdvertisingSupported;
-    int mLeMaximumAdvertisingDataLength;
+    int mNumOfAdvertisementInstancesSupported = 0;
+    bool mRpaOffloadSupported {};
+    int mNumOfOffloadedIrkSupported = 0;
+    int mNumOfOffloadedScanFilterSupported = 0;
+    int mOffloadedScanResultStorageBytes = 0;
+    int mVersSupported = 0;
+    int mTotNumOfTrackableAdv = 0;
+    bool mIsExtendedScanSupported {};
+    bool mIsDebugLogSupported {};
+    bool mIsActivityAndEnergyReporting {};
+    bool mIsLe2MPhySupported {};
+    bool mIsLeCodedPhySupported {};
+    bool mIsLeExtendedAdvertisingSupported {};
+    bool mIsLePeriodicAdvertisingSupported {};
+    int mLeMaximumAdvertisingDataLength = 0;
     /**
      * Reliable write queue
      */
     std::unordered_set<string> mReliableQueue;
     // Native events Queue
-	MsgQueue<BtEvent*> mEventQ;
+    MsgQueue<BtEvent*> mEventQ;
     std::thread mGattThread;
 
     bool isRestrictedCharUuid(const Uuid charUuid);
