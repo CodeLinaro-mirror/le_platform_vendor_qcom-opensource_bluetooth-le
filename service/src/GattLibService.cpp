@@ -2581,8 +2581,13 @@ void GattLibService::setDeviceName(void *val, int len)
 {
   std::string sp(static_cast<const char*>(val), len);
   mDeviceName = sp;
+  ALOGD(LOGTAG "%s -- name %s, len %d", __func__, mDeviceName.c_str(), len);
+
   if (mProxyService != nullptr) {
-    mProxyService->gattLeAdvertiserManager()->UpdateDeviceNameProperty();
+    auto ret = mProxyService->gattLeAdvertiserManager()->UpdateDeviceNameProperty(mDeviceName);
+    if (ret <= 0) {
+      ALOGD(LOGTAG " ----- Device Name update failed with error %d", ret);
+    }
   }
 }
 

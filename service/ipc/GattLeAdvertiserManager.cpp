@@ -481,7 +481,14 @@ int GattLeAdvertiserManager::sd_getDeviceName(sd_bus *bus, const char *path, con
                                 sd_bus_message *reply, void *userdata, sd_bus_error *ret_error) {
   ALOGI(LOGTAG " %s", __func__);
   GattLeAdvertiserManager *advManager = static_cast<GattLeAdvertiserManager *>(userdata);
-  return sd_bus_message_append_basic(reply, SD_BUS_TYPE_STRING, advManager->bdName_.c_str());
+  auto name = advManager->bdName_;
+  if (!name.empty()) {
+    return sd_bus_message_append_basic(reply, SD_BUS_TYPE_STRING, name.c_str());
+  }
+  else {
+    ALOGD(LOGTAG " -- remote Device Name not yet set");
+    return sd_bus_message_append_basic(reply, SD_BUS_TYPE_STRING, nullptr);
+  }
 }
 
 int GattLeAdvertiserManager::UpdateLocalLeFeaturesProperties() {
@@ -490,16 +497,16 @@ int GattLeAdvertiserManager::UpdateLocalLeFeaturesProperties() {
                                          GATT_SERVER_ADVERTISER_MANAGER_OBJECT_PATH,
                                          GATT_SERVER_ADVERTISER_MANAGER_INTERFACE,
                                          "LeCodedPhySupported", "Le2MPhySupported", "PeriodicAdvertisingSupported",
-                                         "MaxAdvertisingDataLength");
+                                         "MaxAdvertisingDataLength", nullptr);
 }
 
-int GattLeAdvertiserManager::UpdateDeviceNameProperty() {
-  ALOGI(LOGTAG " %s", __func__);
-  bdName_ = gatt_dbus_service_->GetGattLibService()->getDeviceName();
+int GattLeAdvertiserManager::UpdateDeviceNameProperty(const std::string& name) {
+  ALOGI(LOGTAG " %s, name: %s", __func__, name.c_str());
+  bdName_ = name;
   return  sd_bus_emit_properties_changed(gatt_dbus_service_->GetSdbus(),
                                          GATT_SERVER_ADVERTISER_MANAGER_OBJECT_PATH,
                                          GATT_SERVER_ADVERTISER_MANAGER_INTERFACE,
-                                         "DeviceName");
+                                         "DeviceName", nullptr);
 }
 } // namespace ipc
 } // namespace gatt

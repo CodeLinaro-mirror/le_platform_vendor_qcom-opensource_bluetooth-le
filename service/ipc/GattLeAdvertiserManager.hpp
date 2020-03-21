@@ -44,7 +44,7 @@ class GattLeAdvertiserManager final {
 
     bool InitialiseDBusService();
     int UpdateLocalLeFeaturesProperties();
-    int UpdateDeviceNameProperty();
+    int UpdateDeviceNameProperty(const std::string& name);
 
   private:
     static int sd_StartAdvertisingSet(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);

@@ -43,10 +43,12 @@ GattDBusService::GattDBusService(GattLibService *gatt_lib_service_ptr)
 }
 
 GattDBusService::~GattDBusService() {
+  ALOGI(LOGTAG "%s", __func__);
   int res = close(callbackFd_);
   ALOGI(LOGTAG " close: %d - %s\n", -res, strerror(-res));
   callbackFd_ = -1;
 }
+
 std::shared_ptr<GattDBusService> GattDBusService::getGattDBusProxy(
                                        GattLibService *gatt_lib_service_ptr) {
   ALOGI(LOGTAG " %s", __func__);
@@ -57,7 +59,7 @@ std::shared_ptr<GattDBusService> GattDBusService::getGattDBusProxy(
     struct make_shared_singleton : public GattDBusService {
           make_shared_singleton(GattLibService *gatt_lib_service_ptr) :
         GattDBusService(gatt_lib_service_ptr) {};
-    };
+      };
     GattDBusService::gattDBusProxy_ =
 	         std::make_shared<make_shared_singleton>(gatt_lib_service_ptr);
 
@@ -67,7 +69,6 @@ std::shared_ptr<GattDBusService> GattDBusService::getGattDBusProxy(
   }
   return GattDBusService::gattDBusProxy_;
 }
-
 
 bool GattDBusService::Shutdown() {
   ALOGI(LOGTAG " %s", __func__);
@@ -90,6 +91,10 @@ bool GattDBusService::Shutdown() {
   sd_event_unref(g_eventLoop_);
   g_eventLoop_ = nullptr;
 
+  int res = close(callbackFd_);
+  ALOGI(LOGTAG " close: %d - %s\n", -res, strerror(-res));
+  callbackFd_ = -1;
+  GattDBusService::gattDBusProxy_ = nullptr;
   return true;
 }
 
