@@ -228,6 +228,7 @@ void gattstestServerCallback::onCharacteristicReadRequest(string deviceAddress, 
   fprintf(stdout,"%s \n",__FUNCTION__);
   uint8_t *value = NULL;
   value = characteristic->getValue();
+  size_t value_length = characteristic->getValue();
   GattService *mService = characteristic->getService();
   Uuid s_uuid = mService->getUuid();
   Uuid c_uuid = characteristic->getUuid();
@@ -243,7 +244,7 @@ void gattstestServerCallback::onCharacteristicReadRequest(string deviceAddress, 
     }
   }
   mServer= str->second;
-  bool status = mServer->sendResponse(deviceAddress,requestId,0,offset,value + offset);
+  bool status = mServer->sendResponse(deviceAddress,requestId,0,offset,value + offset, value_length - offset);
   if(status) {
     fprintf(stdout,"%s response sent \n", __FUNCTION__);
   }
@@ -273,7 +274,7 @@ void gattstestServerCallback::onCharacteristicWriteRequest(string deviceAddress,
     characteristic->setValue(value, length);
   }
   if (responseNeeded) {
-    mServer->sendResponse(deviceAddress,requestId,0,offset,value);
+    mServer->sendResponse(deviceAddress,requestId,0,offset,value,length);
   }
   int d = characteristic->getProperties() & GattCharacteristic::PROPERTY_NOTIFY;
   if((characteristic->getProperties() & GattCharacteristic::PROPERTY_NOTIFY) != 0) {
@@ -292,6 +293,7 @@ void gattstestServerCallback::onDescriptorReadRequest(string deviceAddress, int 
   uint8_t *value = NULL;
   Uuid desc_uuid = descriptor->getUuid();
   value = descriptor->getValue();
+  size_t value_length = descriptor->getValueLength() - offset;
   fprintf(stdout,"%s Descriptor UUID: %s  value = %s\n", __FUNCTION__, desc_uuid.ToString().c_str(),descriptor->getValue());
   GattServer *mServer = NULL;
   unordered_map <gattstestServerCallback*,GattServer*> ::iterator str;
@@ -301,7 +303,7 @@ void gattstestServerCallback::onDescriptorReadRequest(string deviceAddress, int 
         break;
     }
     mServer= str->second;
-    bool status = mServer->sendResponse(deviceAddress,requestId,0,offset,value+offset);
+    bool status = mServer->sendResponse(deviceAddress,requestId,0,offset,value+offset,value_length-offset);
     if(status) {
         fprintf(stdout,"%s response sent \n", __FUNCTION__);
     }
@@ -337,7 +339,7 @@ void gattstestServerCallback::onDescriptorWriteRequest(string deviceAddress, int
     descriptor->setValue(value, length);
   }
   if (responseNeeded) {
-    bool status = mServer->sendResponse(deviceAddress,requestId,0,offset,value);
+    bool status = mServer->sendResponse(deviceAddress,requestId,0,offset,value,length);
     if (status) {
       fprintf(stdout,"%s response sent \n", __FUNCTION__);
     }
@@ -363,7 +365,7 @@ void gattstestServerCallback::onExecuteWrite(string deviceAddress, int requestId
   } else {
      receivedData.clear();
   }
-  bool status = mServer->sendResponse(deviceAddress,requestId,GATT_SUCCESS,0,NULL);
+  bool status = mServer->sendResponse(deviceAddress,requestId,GATT_SUCCESS,0,NULL,0);
   if (status) {
     fprintf(stdout,"%s response sent \n", __FUNCTION__);
   }

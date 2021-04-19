@@ -462,14 +462,14 @@ void GattServer::readPhy(string deviceAddress)
 }
 
 bool GattServer::sendResponse(string deviceAddress, int requestId,
-          int status, int offset, uint8_t *value)
+          int status, int offset, uint8_t *value, size_t length)
 {
   if (VDBG) ALOGD(LOGTAG " sendResponse() - device: %s", deviceAddress.c_str());
   if (mService == NULL || mServerIf == 0) return false;
 
   try {
     mService->sendResponse(mServerIf, deviceAddress, requestId,
-            status, offset, value);
+            status, offset, value, length);
   } catch (std::exception& e) {
       ALOGE(LOGTAG " %s", e.what());
       return false;
@@ -495,7 +495,7 @@ bool GattServer::notifyCharacteristicChanged(string deviceAddress,
   try {
     mService->sendNotification(mServerIf, deviceAddress,
             characteristic.getInstanceId(), confirm,
-            characteristic.getValue());
+            characteristic.getValue(), characteristic.getValueLength());
   } catch (std::exception& e) {
       ALOGE(LOGTAG " %s", e.what());
       return false;

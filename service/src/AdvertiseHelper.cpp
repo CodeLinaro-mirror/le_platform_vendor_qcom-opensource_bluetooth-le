@@ -39,7 +39,12 @@ std::vector<uint8_t> AdvertiseHelper::advertiseDataToBytes(AdvertiseData *data, 
   // no need to add them here.
   std::vector<uint8_t> vec;
 
-  if (data->getIncludeDeviceName()) {
+  std::vector<uint8_t> rawData = data->getRawData();
+  vec.insert(vec.end(), rawData.begin(), rawData.end());
+
+  if (data->getIncludeDeviceName() || data->getLocalName().size()) {
+    if (data->getLocalName().size())
+      name = data->getLocalName();
     try {
       const uint8_t *nameBytes = reinterpret_cast<const uint8_t*>(name.c_str());
 
@@ -52,6 +57,8 @@ std::vector<uint8_t> AdvertiseHelper::advertiseDataToBytes(AdvertiseData *data, 
       } else {
           type = COMPLETE_LOCAL_NAME;
       }
+      if (data->getLocalName().size() && data->getLocalNameShortened())
+        type = SHORTENED_LOCAL_NAME;
 
       vec.push_back(nameLength + 1);
       vec.push_back(type);

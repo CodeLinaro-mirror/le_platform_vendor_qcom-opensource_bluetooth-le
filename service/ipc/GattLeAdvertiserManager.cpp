@@ -179,7 +179,7 @@ int GattLeAdvertiserManager::sd_EnableAdvertisingSet(sd_bus_message *m,
  ALOGI(LOGTAG "\n        ==> DBUS CALL ENTRY for %s", __func__);
   const char *sender = sd_bus_message_get_sender(m);
   const int32_t advertiserId;
-  const bool enable;
+  const int enable;
   const int32_t duration;
   const int32_t maxExtAdvEvents;
 
@@ -188,7 +188,6 @@ int GattLeAdvertiserManager::sd_EnableAdvertisingSet(sd_bus_message *m,
     ALOGI(LOGTAG "  --> Failed to parse parameters %s", strerror(-result));
     return result;
   }
-
   GattLeAdvertiserManager *advManager = static_cast<GattLeAdvertiserManager *>(userdata);
   advManager->gatt_dbus_service_->GetGattLibService()->enableAdvertisingSet(
                                                            advertiserId, enable, duration, maxExtAdvEvents);

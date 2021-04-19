@@ -170,24 +170,24 @@ std::string Uuid::ToString() const {
       uu[10], uu[11], uu[12], uu[13], uu[14], uu[15]);
 }
 
-std::array<uint8_t,Uuid::kNumBytes16> Uuid::As16BitBE() const {
+std::array<uint8_t,Uuid::kNumBytes16> Uuid::As16BitLE() const {
   std::array<uint8_t,Uuid::kNumBytes16> uuid;
-  ALOGE(LOGTAG "As16Bit u[1] %d u[0] %d",
+  ALOGE(LOGTAG "As16Bit u[0] %d u[1] %d",
                 uu[3], uu[2]);
-  uuid[1] = uu[3];
-  uuid[0] = uu[2];
+  uuid[0] = uu[3];
+  uuid[1] = uu[2];
 
   return uuid;
 }
 
-std::array<uint8_t,Uuid::kNumBytes32> Uuid::As32BitBE() const {
+std::array<uint8_t,Uuid::kNumBytes32> Uuid::As32BitLE() const {
   std::array<uint8_t,Uuid::kNumBytes32> uuid;
-  ALOGE(LOGTAG "As32Bit u[3] %d u[2] %d u[1] %d u[0] %d",
+  ALOGE(LOGTAG "As32Bit u[0] %d u[1] %d u[2] %d u[3] %d",
                 uu[3], uu[2], uu[1], uu[0]);
-  uuid[3] = uu[3];
-  uuid[2] = uu[2];
-  uuid[1] = uu[1];
-  uuid[0] = uu[0];
+  uuid[0] = uu[3];
+  uuid[1] = uu[2];
+  uuid[2] = uu[1];
+  uuid[3] = uu[0];
 
   return uuid;
 }
@@ -199,15 +199,15 @@ std::vector<uint8_t> Uuid::uuidToByte(Uuid uuid) {
 
   std::vector<uint8_t> vec;
   if(uuid.GetShortestRepresentationSize() == Uuid::kNumBytes16) {
-    serviceDataUuid16Bit= uuid.As16BitBE(); // this returns big endian representation
+    serviceDataUuid16Bit= uuid.As16BitLE(); // this returns little endian representation
     vec.assign(serviceDataUuid16Bit.begin(), serviceDataUuid16Bit.end());
   }
   else if(uuid.GetShortestRepresentationSize() == Uuid::kNumBytes32) {
-    serviceDataUuid32Bit = uuid.As32BitBE(); // this returns big endian representation
+    serviceDataUuid32Bit = uuid.As32BitLE(); // this returns little endian representation
     vec.assign(serviceDataUuid32Bit.begin(), serviceDataUuid32Bit.end());
     }
   else {
-      serviceDataUuid128Bit = uuid.To128BitBE();
+      serviceDataUuid128Bit = uuid.To128BitLE();
       vec.assign(serviceDataUuid128Bit.begin(), serviceDataUuid128Bit.end());
     }
   std::string t(vec.begin(), vec.end());

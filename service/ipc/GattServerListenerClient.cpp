@@ -327,9 +327,7 @@ void GattServerListenerClient::onCharacteristicWriteRequest(const std::string& a
     return;
   }
 
-  int len = static_cast<int>(strlen((char *)value));
-  // The null byte also needs to be copied so add 1 to the length.
-  res = sd_bus_message_append_array(m, 'y', value, len + 1);
+  res = sd_bus_message_append_array(m, 'y', value, length);
 
   res = sd_bus_call_async(dbus_service_->GetSdbus(), nullptr, m, nullptr, nullptr, 0);
 
@@ -397,9 +395,7 @@ void GattServerListenerClient::onDescriptorWriteRequest(const std::string& addre
     return;
   }
 
-  int len = static_cast<int>(strlen((char *)value));
-  // The null byte also needs to be copied so add 1 to the length.
-  res = sd_bus_message_append_array(m, 'y', value, len + 1);
+  res = sd_bus_message_append_array(m, 'y', value, length);
 
   res = sd_bus_call_async(dbus_service_->GetSdbus(), nullptr, m, nullptr, nullptr, 0);
 

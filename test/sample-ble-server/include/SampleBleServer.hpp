@@ -55,7 +55,7 @@ class SampleBleServer final {
     bool StartAdvertisement(void);
     void StopAdvertisement(void);
 
-    void SendResponse(string, int, int, int, uint8_t *);
+    void SendResponse(string, int, int, int, uint8_t *, size_t);
 
   private:
     enum Service_state { SERVICE_ACTIVE, SERVICE_INACTIVE, SERVICE_TRANSACTION_PENDING };

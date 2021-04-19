@@ -54,9 +54,9 @@ class SampleBleServerCallback final: public GattServerCallback {
                                       bool preparedWrite,
                                       bool responseNeeded,
                                       int offset,
-                                      uint8_t* value) {
+                                      uint8_t* value, size_t length) {
       ALOGD(LOGTAG"%s value = %s",__FUNCTION__, value);
-      bleServer_->SendResponse(deviceAddress, requestId, 0, offset, value);
+      bleServer_->SendResponse(deviceAddress, requestId, 0, offset, value, length);
     }
 
     void onDescriptorWriteRequest(string deviceAddress,
@@ -65,9 +65,9 @@ class SampleBleServerCallback final: public GattServerCallback {
                                   bool preparedWrite,
                                   bool responseNeeded,
                                   int offset,
-                                  uint8_t* value) {
+                                  uint8_t* value, size_t length) {
       ALOGD(LOGTAG"%s value = %s",__FUNCTION__, value);
-      bleServer_->SendResponse(deviceAddress, requestId, 0, offset, value);
+      bleServer_->SendResponse(deviceAddress, requestId, 0, offset, value, length);
     }
 
   private:
