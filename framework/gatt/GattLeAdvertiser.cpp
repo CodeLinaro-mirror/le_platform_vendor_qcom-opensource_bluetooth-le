@@ -67,6 +67,8 @@ int GattLeAdvertiser::totalBytes(AdvertiseData *data, bool isFlagsIncluded)
   // Flags field is omitted if the advertising is not connectable.
   int size = (isFlagsIncluded) ? FLAGS_FIELD_BYTES : 0;
 
+  size += data->getRawData().size();
+
   if (!(data->getServiceUuids().empty())) {
     int num16BitUuids = 0;
     int num32BitUuids = 0;
@@ -127,6 +129,10 @@ int GattLeAdvertiser::totalBytes(AdvertiseData *data, bool isFlagsIncluded)
       return 0;
     }
   auto deviceName = gattLibService->getDeviceName();
+  if (data->getLocalName().size()) {
+    size += OVERHEAD_BYTES_PER_FIELD + data->getLocalName().length();
+  }
+  else
   if (data->getIncludeDeviceName() && !deviceName.empty()) {
     size += OVERHEAD_BYTES_PER_FIELD + deviceName.length();
   }

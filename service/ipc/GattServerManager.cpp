@@ -210,7 +210,7 @@ int GattServerManager::sd_SendResponse(sd_bus_message *m, void *userdata, sd_bus
   }
 
   if (gatt_server_manager_ptr != nullptr) {
-    if (!gatt_server_manager_ptr->onSendResponse(serverId, std::string(deviceAddress), args, value_array)) {
+    if (!gatt_server_manager_ptr->onSendResponse(serverId, std::string(deviceAddress), args, value_array, array_size)) {
       return sd_bus_reply_method_return(m, NULL);
     }
   }
@@ -250,13 +250,13 @@ int GattServerManager::sd_SendNotification(sd_bus_message *m, void *userdata, sd
   }
 
   if (gatt_server_manager_ptr != nullptr) {
-    if (!gatt_server_manager_ptr->onSendNotification(serverId, std::string(deviceAddress), args, value_array)) {
+    if (!gatt_server_manager_ptr->onSendNotification(serverId, std::string(deviceAddress), args, value_array, array_size)) {
       return sd_bus_reply_method_return(m, NULL);
     }
   }
   return sd_bus_reply_method_return(m, NULL);
 }
-bool GattServerManager::onSendResponse(int32_t serverId, const std::string &deviceAddress, SdBus::ArgumentMap &args, uint8_t *value) {
+bool GattServerManager::onSendResponse(int32_t serverId, const std::string &deviceAddress, SdBus::ArgumentMap &args, uint8_t *value, size_t length) {
   ALOGI(LOGTAG " %s", __func__);
 
   auto requestId_entry = args.find("requestId");
@@ -275,12 +275,12 @@ bool GattServerManager::onSendResponse(int32_t serverId, const std::string &devi
     ALOGE(LOGTAG "no GattLibService registered");
     return false;
   }
-  gatt_dbus_service_->GetGattLibService()->sendResponse(serverId, deviceAddress, requestId, status, offset, value);
+  gatt_dbus_service_->GetGattLibService()->sendResponse(serverId, deviceAddress, requestId, status, offset, value, length);
 
   return true;
 }
 
-bool GattServerManager::onSendNotification(int32_t serverId, const std::string &deviceAddress, SdBus::ArgumentMap &args, uint8_t *value) {
+bool GattServerManager::onSendNotification(int32_t serverId, const std::string &deviceAddress, SdBus::ArgumentMap &args, uint8_t *value, size_t length) {
   ALOGI(LOGTAG " %s", __func__);
 
   auto attrId_entry = args.find("attrId");
@@ -297,7 +297,7 @@ bool GattServerManager::onSendNotification(int32_t serverId, const std::string &
     ALOGE(LOGTAG "no GattLibService registered");
     return false;
   }
-  gatt_dbus_service_->GetGattLibService()->sendNotification(serverId, deviceAddress, attrId, confirm, value);
+  gatt_dbus_service_->GetGattLibService()->sendNotification(serverId, deviceAddress, attrId, confirm, value, length);
   return true;
 }
 

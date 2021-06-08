@@ -566,10 +566,8 @@ void GattLibService::onNotify(int connId, string address, int handle, bool isNot
 {
   if (DBG) {
     if (data != NULL) {
-      size_t size= strlen((char*)data);
-      int len = static_cast<int>(size);
       ALOGD(LOGTAG " onNotify() - address=%s, handle=%d, length=%d",
-                address.c_str(), handle, len);
+                address.c_str(), handle, length);
     }
   }
 
@@ -593,10 +591,8 @@ void GattLibService::onReadCharacteristic(int connId, int status, int handle,
 
   if (DBG) {
     if (data != NULL) {
-      size_t size= strlen((char*)data);
-      int len = static_cast<int>(size);
       ALOGD(LOGTAG " onReadCharacteristic() - address=%s, status=%d, length=%d",
-                    address.c_str(), status, len);
+                    address.c_str(), status, length);
     }
   }
 
@@ -2196,7 +2192,7 @@ void GattLibService::clearServices(int serverIf)
 }
 
 void GattLibService::sendResponse(int serverIf, string address, int requestId, int status,
-        int offset, uint8_t *value)
+        int offset, uint8_t *value, int length)
 {
   if (VDBG) {
     ALOGD(LOGTAG " sendResponse() - address %s", address.c_str());
@@ -2212,8 +2208,7 @@ void GattLibService::sendResponse(int serverIf, string address, int requestId, i
     connId = 0;
   std::vector<uint8_t> val_vec;
   if(value != NULL) {
-    size_t len = strlen((char*)value);
-    val_vec.assign(&value[0], &value[len]);
+    val_vec.assign(&value[0], &value[length]);
   }
   mNative->gattServerSendResponseNative(serverIf, connId , requestId,
           (uint8_t) status, handle, offset, val_vec, (uint8_t) 0);
@@ -2221,7 +2216,7 @@ void GattLibService::sendResponse(int serverIf, string address, int requestId, i
 }
 
 void GattLibService::sendNotification(int serverIf, string address, int handle, bool confirm,
-        uint8_t *value)
+        uint8_t *value, int length)
 {
   if (VDBG) {
     ALOGD(LOGTAG " sendNotification() - address %s  handle %d", address.c_str(), handle);
@@ -2235,8 +2230,7 @@ void GattLibService::sendNotification(int serverIf, string address, int handle, 
 
   std::vector<uint8_t> val_vec;
   if(value != NULL) {
-    size_t len = strlen((char*)value);
-    val_vec.assign(&value[0], &value[len]);
+    val_vec.assign(&value[0], &value[length]);
   }
 
   if (confirm) {
@@ -2725,14 +2719,8 @@ void GattLibService::HandleGattcExecuteWriteEvent(GattcExecuteWriteEvent *event)
 void GattLibService::HandleGattcReadDescriptorEvent(GattcReadDescriptorEvent *event)
 {
   if (!sGattService) return;
-  uint8_t *value = NULL;
-  if (event->p_data.value.len != 0) {
-    value = new uint8_t[event->p_data.value.len+1];
-    std::memcpy(value, &event->p_data.value.value, event->p_data.value.len);
-  }
-
   sGattService->onReadDescriptor(event->conn_id, event->status, event->p_data.handle,
-                                  value, event->p_data.value.len);
+                                  event->p_data.value.value, event->p_data.value.len);
 }
 
 void GattLibService::HandleGattcWriteDescriptorEvent(GattcWriteDescriptorEvent *event)
@@ -2837,6 +2825,7 @@ void GattLibService::HandleGattsServiceAddedEvent(GattsServiceAddedEvent *event)
                       fillGattDbElementArray(event->service->data(),
                                              static_cast<int>(event->service->size()));
   sGattService->onServiceAdded(event->status, event->server_if, service);
+  delete event->service;
 }
 
 void GattLibService::HandleGattsServiceStoppedEvent(GattsServiceStoppedEvent *event)
@@ -2870,36 +2859,20 @@ void GattLibService::HandleGattsRequestWriteCharacteristicEvent(
                                                        GattsRequestWriteCharacteristicEvent *event)
 {
   if (!sGattService) return;
-  uint8_t len = event->value->size();
-  uint8_t *p_value = new uint8_t[len+1];
-  if (len == 0) {
-    ALOGE(LOGTAG "HandleGattsRequestWriteCharacteristicEvent () - Data is NULL");
-  }
-  else {
-    std::memcpy(p_value, event->value->data(), len);
-    p_value[len] = '\0';
-  }
   sGattService->onServerWriteCharacteristic(*(event->bda), event->conn_id, event->trans_id,
                                         event->attr_handle, event->offset, event->value->size(),
-                                        event->need_rsp, event->is_prep, p_value);
+                                        event->need_rsp, event->is_prep, event->value->data());
+  delete event->value;
 }
 
 void GattLibService::HandleGattsRequestWriteDescriptorEvent(
                                                       GattsRequestWriteDescriptorEvent *event)
 {
   if (!sGattService) return;
-  uint8_t len = event->value->size();
-  uint8_t *p_value = new uint8_t[len+1];
-  if (len == 0) {
-    ALOGE(LOGTAG "HandleGattsRequestWriteDescriptorEvent () - Data is NULL");
-  }
-  else {
-    std::memcpy(p_value, event->value->data(), len);
-    p_value[len] = '\0';
-  }
   sGattService->onServerWriteDescriptor(*(event->bda), event->conn_id, event->trans_id,
                                            event->attr_handle, event->offset, event->value->size(),
-                                           event->need_rsp, event->is_prep, p_value);
+                                           event->need_rsp, event->is_prep, event->value->data());
+  delete event->value;
 }
 
 void GattLibService::HandleGattsRequestExecWriteEvent(GattsRequestExecWriteEvent *event)
@@ -2970,36 +2943,19 @@ void GattLibService::HandleBleScannerScanParamsCompleteEvent(
 void GattLibService::HandleBleScannerScanResultEvent(BleScannerScanResultEvent *event)
 {
   if (!sGattService) return;
-  int len = event->adv_data->size();
-  std::vector<uint8_t>p_value(len);
-  if (len == 0) {
-    ALOGE(LOGTAG "HandleBleScannerScanResultEvent () - Data is NULL");
-  }
-  else {
-    p_value.insert(p_value.begin(), event->adv_data->begin(), event->adv_data->end());
-  }
-  ALOGE(LOGTAG "HandleBleScannerScanResultEvent () ");
   sGattService->onScanResult(event->event_type, event->addr_type, *(event->bda),
                     event->primary_phy, event->secondary_phy, event->advertising_sid,
-                    event->tx_power, event->rssi, event->periodic_adv_int, p_value);
+                    event->tx_power, event->rssi, event->periodic_adv_int, *event->adv_data);
+  delete event->adv_data;
 }
 
 void GattLibService::HandleBleScannerBatchScanReportsEvent(
                                                        BleScannerBatchscanReportsEvent *event)
 {
   if (!sGattService) return;
-
-  int len = event->data->size();
-  std::vector<uint8_t>p_value(len);
-  if (len == 0) {
-    ALOGE(LOGTAG "HandleBleScannerBatchScanReportsEvent () - Data is NULL");
-  }
-  else {
-    p_value.insert(p_value.begin(), event->data->begin(), event->data->end());
-  }
   sGattService->onBatchScanReports(event->status, event->client_if, event->report_format,
-                                      event->num_records, p_value);
-  delete(event->data);
+                                      event->num_records, *event->data);
+  delete event->data;
 }
 
 void GattLibService::HandleBleScannerBatchScanThresholdEvent(
@@ -3152,6 +3108,7 @@ void GattLibService::HandleBleScannerPeriodicAdvSyncReportEvent(
   if (!mPeriodicScanManager) return;
   mPeriodicScanManager->onSyncReport(event->sync_handle, event->tx_power, event->rssi,
                                       event->data_status, *(event->data));
+  delete event->data;
 }
 
 void GattLibService::HandleBleAdvertiserPeriodicAdvSetEnableEvent(

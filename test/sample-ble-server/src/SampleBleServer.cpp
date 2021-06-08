@@ -147,7 +147,7 @@ void SampleBleServer::SendResponse(string deviceAddress,
                        int requestId,
                        int status,
                        int offset,
-                       uint8_t * value) {
+                       uint8_t * value, size_t length) {
   ALOGD(LOGTAG"%s", __FUNCTION__);
   if(value != NULL && !strncasecmp((const char *)(value), "on", 2)) {
     if (service_state == SERVICE_INACTIVE) {
@@ -161,7 +161,7 @@ void SampleBleServer::SendResponse(string deviceAddress,
     status = -1;
   }
   service_state  = SERVICE_ACTIVE;
-  mGattServer->sendResponse(deviceAddress, requestId, status, offset, value);
+  mGattServer->sendResponse(deviceAddress, requestId, status, offset, value, length);
 }
 
 void SampleBleServer::DoInternalServerStuff() {

@@ -93,6 +93,7 @@ int PopulateArgumentMessage(sd_bus_message *message, ArgumentMap &args);
 
 // LE Adveritiser
 int getServiceUuidsFromMessage(sd_bus_message *m, vector<bt::Uuid> *serviceUuids);
+int getManufacturerDataFromMessage(sd_bus_message *m, std::map<int, std::vector<uint8_t>> *manufacturerData);
 int getServiceDataFromMessage(sd_bus_message *m, std::map<bt::Uuid, std::vector<uint8_t>> *serviceData);
 int getAdvertiseDataFromMessage(sd_bus_message *m, gatt::AdvertiseData **advData);
 int getAdvertisingSetParametersFromMessage(sd_bus_message *m, gatt::AdvertisingSetParameters **advSetParameters);
@@ -118,7 +119,7 @@ int PopulateAdvertisingSet(sd_bus_message *message, gatt::AdvertisingSetParamete
 #endif
 
 int AppendDictEntry(sd_bus_message *message, std::string key, bool value);
-int AppendDictEntry(sd_bus_message *message, std::string key, uint8_t *value);
+int AppendDictEntry(sd_bus_message *message, std::string key, uint8_t *value, size_t length);
 int AppendDictEntry(sd_bus_message *message, std::string key, std::string value);
 int AppendDictEntry(sd_bus_message *message, std::string key, uint32_t value);
 int AppendDictEntry(sd_bus_message *message, std::string key, int32_t value);

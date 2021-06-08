@@ -176,7 +176,7 @@ class GattServer : public IServerCallback {
      * @param value The value of the attribute that was read/written (optional)
      */
     bool sendResponse(string deviceAddress, int requestId,
-                          int status, int offset, uint8_t *value);
+                          int status, int offset, uint8_t *value, size_t length);
 
     /**
      * Send a notification or indication that a local characteristic has been

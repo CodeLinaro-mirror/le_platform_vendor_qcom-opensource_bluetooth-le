@@ -114,7 +114,7 @@ void GattServerManagerClient::serverReadPhy(int32_t clientIf, const std::string&
   ALOGW(LOGTAG " %s", __func__);
 }
 
-void GattServerManagerClient::sendResponse(int32_t serverIf, const std::string& address, int32_t requestId, int32_t status, int32_t offset, uint8_t *value) {
+void GattServerManagerClient::sendResponse(int32_t serverIf, const std::string& address, int32_t requestId, int32_t status, int32_t offset, uint8_t *value, size_t length) {
   ALOGI(LOGTAG " %s", __func__);
   if (dbus_service_->GetSdbus() == nullptr) {
     ALOGE(LOGTAG " sd_bus object not valid");
@@ -163,9 +163,7 @@ void GattServerManagerClient::sendResponse(int32_t serverIf, const std::string& 
     return;
   }
 
-  int len = static_cast<int>(strlen((char *)value));
-  // The null byte also needs to be copied so add 1 to the length.
-  res = sd_bus_message_append_array(m, 'y', value, len + 1);
+  res = sd_bus_message_append_array(m, 'y', value, length);
 
   res = sd_bus_call_async(dbus_service_->GetSdbus(), nullptr, m, nullptr, nullptr, 0);
 
@@ -175,7 +173,7 @@ void GattServerManagerClient::sendResponse(int32_t serverIf, const std::string& 
   }
 }
 
-void GattServerManagerClient::sendNotification(int32_t serverIf, const std::string& address, int32_t handle, bool confirm, uint8_t *value) {
+void GattServerManagerClient::sendNotification(int32_t serverIf, const std::string& address, int32_t handle, bool confirm, uint8_t *value, size_t length) {
   ALOGI(LOGTAG " %s", __func__);
   if (dbus_service_->GetSdbus() == nullptr) {
     ALOGE(LOGTAG " sd_bus object not valid");
@@ -218,9 +216,7 @@ void GattServerManagerClient::sendNotification(int32_t serverIf, const std::stri
     return;
   }
 
-  int len = static_cast<int>(strlen((char *)value));
-  // The null byte also needs to be copied so add 1 to the length.
-  res = sd_bus_message_append_array(m, 'y', value, len + 1);
+  res = sd_bus_message_append_array(m, 'y', value, length);
 
   res = sd_bus_call_async(dbus_service_->GetSdbus(), nullptr, m, nullptr, nullptr, 0);
 

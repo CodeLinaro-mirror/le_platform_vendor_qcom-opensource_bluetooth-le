@@ -147,6 +147,29 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, std::__cx
   return 1;
 }
 
+int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, const std::vector<uint8_t> &value) {
+  int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
+  if (r < 0)
+    return r;
+  r = sd_bus_message_append_basic(message, 's', key.c_str());
+  if (r < 0)
+    return r;
+  r = sd_bus_message_open_container(message, SD_BUS_TYPE_VARIANT, "ay");
+  if (r < 0)
+    return r;
+  r = sd_bus_message_append_array(message, 'y', value.data(), value.size());
+  if (r < 0)
+    return r;
+  r = sd_bus_message_close_container(message);
+  if (r < 0)
+    return r;
+  r = sd_bus_message_close_container(message);
+  if (r < 0)
+    return r;
+
+  return 1;
+}
+
 int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, uint32_t value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
@@ -197,7 +220,7 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, int32_t v
   r = sd_bus_message_close_container(message);
   if (r < 0)
     return r;
-  
+
   return r;
 }
 
@@ -257,11 +280,7 @@ int AppendDictEntry(sd_bus_message *message, std::string key, std::map<bt::Uuid,
     r = sd_bus_message_append_basic(message, 's', it->first.ToString().c_str());
     if (r < 0)
       return r;
-    uint8_t* vec = &it->second[0];
-    len = static_cast<int>(strlen(vec));
-    // The byte array should be null terminated and the null byte
-    // also needs to be copied so add 1 to the length.
-    r = sd_bus_message_append_array(message, 'y', vec, len + 1);
+    r = sd_bus_message_append_array(message, 'y', it->second.data(), it->second.size());
     if (r < 0)
       return r;
     r = sd_bus_message_close_container(message);
@@ -379,6 +398,7 @@ int PopulateGattCharacteristic(sd_bus_message *message, gatt::GattCharacteristic
   int keySize = gatt_characteristic->getKeySize();
   int writeType = gatt_characteristic->getWriteType();
   uint8_t *value = gatt_characteristic->getValue();
+  int valueLength = gatt_characteristic->getValueLength();
   std::vector<gatt::GattDescriptor *> descriptors = gatt_characteristic->getDescriptors();
 
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_ARRAY, "{sv}");
@@ -416,7 +436,7 @@ int PopulateGattCharacteristic(sd_bus_message *message, gatt::GattCharacteristic
     ALOGE(LOGTAG " %s -> ERROR: Could not Populate writeType", __func__);
     return r;
   }
-  r = AppendDictEntry(message, "value", value);
+  r = AppendDictEntry(message, "value", value, valueLength);
   if (r < 0) {
     ALOGE(LOGTAG " %s -> ERROR: Could not Populate value", __func__);
     return r;
@@ -447,6 +467,7 @@ int PopulateGattDescriptor(sd_bus_message *message, gatt::GattDescriptor *gatt_d
   // This is a byte array with a null terminated string. The length of the array
   // can be achieved with functions such as strlen
   uint8_t *value = gatt_descriptor->getValue();
+  int valueLength = gatt_descriptor->getValueLength();
 
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_ARRAY, "{sv}");
 
@@ -473,7 +494,7 @@ int PopulateGattDescriptor(sd_bus_message *message, gatt::GattDescriptor *gatt_d
     return r;
   }
 
-  r = AppendDictEntry(message, "value", value);
+  r = AppendDictEntry(message, "value", value, valueLength);
   if (r < 0) {
     ALOGE(LOGTAG " %s -> ERROR: Could not Populate value", __func__);
     return r;
@@ -553,6 +574,13 @@ int PopulateLeAdvertiseData(sd_bus_message *message, gatt::AdvertiseData *advDat
     return r;
   }
 
+  std::vector<uint8_t> rawData = advData->getRawData();
+  if(!rawData.empty()) {
+    r = AppendDictEntry(message, "RawData", rawData.data(), rawData.size());
+    if (r < 0) {
+      return r;
+    }
+  }
   r = AppendDictEntry(message, "IncludeTxPowerLevel", advData->getIncludeTxPowerLevel());
   if (r < 0) {
     return r;
@@ -769,13 +797,10 @@ int PopulateAdvertisingSet(sd_bus_message *message, gatt::AdvertisingSetParamete
 }
 
 
-int AppendDictEntry(sd_bus_message *message, std::string key, uint8_t *value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, uint8_t *value, size_t length) {
   if (value == nullptr) {
     return -1;
   }
-  // The byte array is null terminated. The length can be retrieved using
-  // strlen
-  int len = static_cast<int>(strlen((char *)value));
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -785,8 +810,7 @@ int AppendDictEntry(sd_bus_message *message, std::string key, uint8_t *value) {
   r = sd_bus_message_open_container(message, SD_BUS_TYPE_VARIANT, "ay");
   if (r < 0)
     return r;
-  // The null byte also needs to be copied so add 1 to the length.
-  r = sd_bus_message_append_array(message, 'y', value, len + 1);
+  r = sd_bus_message_append_array(message, 'y', value, length);
   if (r < 0)
     return r;
   r = sd_bus_message_close_container(message);
@@ -884,6 +908,94 @@ int getServiceUuidsFromMessage(sd_bus_message *m, vector<bt::Uuid> *serviceUuids
   return 1;
 }
 
+int getManufacturerDataFromMessage(sd_bus_message *m, std::map<int, std::vector<uint8_t>> *manufacturerData) {
+  char type;
+  const char *contents;
+  char **array;
+  uint8_t *data = nullptr;
+  int manufacturerId;
+  size_t array_size;
+
+  int res = sd_bus_message_enter_container(m, SD_BUS_TYPE_VARIANT, "av");
+  if (res < 0) {
+    return res;
+  }
+  res = sd_bus_message_enter_container(m, SD_BUS_TYPE_ARRAY, "v");
+  if (res < 0) {
+    return res;
+  }
+
+  // For each entry
+  for (;;) {
+    res = sd_bus_message_peek_type(m, &type, &contents);
+    if (res < 0) {
+      return res;
+    }
+    // Break out of loop if end of array
+    if (res == 0) {
+      break;
+    }
+    // Check if it is a variant
+    if (type != SD_BUS_TYPE_VARIANT) {
+      ALOGE(LOGTAG "%s -> Type not variant, it is:  %c", __func__, type);
+      return -EINVAL;
+    }
+
+    // Open Variant
+    res = sd_bus_message_enter_container(m, type, contents);
+    ALOGE(LOGTAG "%s -> open Variant type: %c", __func__, type);
+    if (res < 0) {
+      return res;
+    }
+
+    res = sd_bus_message_peek_type(m, &type, &contents);
+    if (res < 0) {
+      return res;
+    }
+
+    res = sd_bus_message_enter_container(m, type, contents);
+    if (res < 0) {
+      return res;
+    }
+
+    // Get the manufacturer ID
+    res = sd_bus_message_read(m, "i", &manufacturerId);
+    if (res < 0) {
+      return res;
+    }
+    ALOGD(LOGTAG "manufacturerId: %d", manufacturerId);
+    // Get the data
+    res = sd_bus_message_read_array(m, 'y', &data, &array_size);
+    if (res < 0) {
+      return res;
+    }
+
+    std::vector<uint8_t> dataVec(data, data + array_size);
+
+    ALOGE(LOGTAG "%s -> dataVec.size(): %d", __func__, dataVec.size());
+    manufacturerData->insert(std::pair<int, std::vector<uint8_t>> ( manufacturerId, dataVec ) );
+    res = sd_bus_message_exit_container(m);
+    if (res < 0) {
+      return res;
+    }
+
+    res = sd_bus_message_exit_container(m);
+    if (res < 0) {
+      return res;
+    }
+
+  }
+
+  res = sd_bus_message_exit_container(m);
+  if (res < 0) {
+    return res;
+  }
+  res = sd_bus_message_exit_container(m);
+  if (res < 0) {
+    return res;
+  }
+  return 1;
+}
 
 int getServiceDataFromMessage(sd_bus_message *m, std::map<bt::Uuid, std::vector<uint8_t>> *serviceData) {
   char type;
@@ -956,10 +1068,14 @@ int getServiceDataFromMessage(sd_bus_message *m, std::map<bt::Uuid, std::vector<
 }
 
 int getAdvertiseDataFromMessage(sd_bus_message *m, gatt::AdvertiseData **advData) {
-  bool includeTxPowerLevel;
-  bool includeDeviceName;
+  std::vector<uint8_t> rawData;
+  bool includeTxPowerLevel = false;
+  bool includeDeviceName = false;
+  std::string localName;
+  bool localNameShortened;
   std::vector<bt::Uuid> serviceUuids;
   std::map<bt::Uuid, std::vector<uint8_t>> serviceData;
+  std::map<int, std::vector<uint8_t>> manufacturerData;
 
   char type;
   const char *contents;
@@ -1022,6 +1138,15 @@ int getAdvertiseDataFromMessage(sd_bus_message *m, gatt::AdvertiseData **advData
       return res;
     }
 
+    if (strcasecmp(key, "RawData") == 0) {
+      uint8_t *value = nullptr;
+      size_t array_size;
+      res = getByteArrayFromMessage(m, &value, &array_size);
+      if (res < 0) {
+        return res;
+      }
+      rawData.assign(value, value + array_size);
+    } else
     if (strcasecmp(key, "IncludeTxPowerLevel") == 0) {
       res = getBoolFromMessage(m, &includeTxPowerLevel);
       if (res < 0) {
@@ -1032,6 +1157,16 @@ int getAdvertiseDataFromMessage(sd_bus_message *m, gatt::AdvertiseData **advData
       if (res < 0) {
         return res;
 	    }
+    } else if (strcasecmp(key, "LocalName") == 0) {
+      res = getStringFromMessage(m, &localName);
+      if (res < 0) {
+        return res;
+      }
+    } else if (strcasecmp(key, "LocalNameShortened") == 0) {
+      res = getBoolFromMessage(m, &localNameShortened);
+      if (res < 0) {
+        return res;
+      }
     } else if (strcasecmp(key, "ServiceUuids") == 0) {
       res = getServiceUuidsFromMessage(m, &serviceUuids);
       if (res < 0) {
@@ -1039,6 +1174,11 @@ int getAdvertiseDataFromMessage(sd_bus_message *m, gatt::AdvertiseData **advData
       }
     } else if (strcasecmp(key, "ServiceData") == 0) {
       res = getServiceDataFromMessage(m, &serviceData);
+      if (res < 0) {
+        return res;
+      }
+    } else if (strcasecmp(key, "ManufacturerData") == 0) {
+      res = getManufacturerDataFromMessage(m, &manufacturerData);
       if (res < 0) {
         return res;
       }
@@ -1065,13 +1205,20 @@ int getAdvertiseDataFromMessage(sd_bus_message *m, gatt::AdvertiseData **advData
   }
 
   gatt::AdvertiseData::Builder builder = gatt::AdvertiseData::Builder().setIncludeDeviceName(includeDeviceName)
-                                  .setIncludeTxPowerLevel(includeTxPowerLevel);
+                                  .setIncludeTxPowerLevel(includeTxPowerLevel)
+                                  .setRawData(rawData)
+                                  .setLocalNameShortened(localNameShortened)
+                                  .setLocalName(localName);
   for (auto serviceUuid : serviceUuids) {
     builder.addServiceUuid(serviceUuid);
   }
   for (std::map<bt::Uuid, std::vector<uint8_t>>::iterator it = serviceData.begin();
           it != serviceData.end(); ++it) {
     builder.addServiceData(it->first,it->second);
+  }
+  for (std::map<int, std::vector<uint8_t>>::iterator it = manufacturerData.begin();
+	 it != manufacturerData.end(); ++it) {
+    builder.addManufacturerData(it->first, it->second);
   }
 
   *advData = builder.build();

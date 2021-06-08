@@ -54,9 +54,9 @@ class GattServerManagerClient {
       int32_t phyOptions);
   void serverReadPhy(int32_t clientIf, const std::string& address);
   void sendResponse(int32_t serverIf, const std::string& address, int32_t requestId, int32_t status,
-      int32_t offset, uint8_t *value);
+      int32_t offset, uint8_t *value, size_t length);
   void sendNotification(int32_t serverIf, const std::string& address, int32_t handle, bool confirm,
-      uint8_t *value);
+      uint8_t *value, size_t length);
   void addService(int32_t serverIf, GattService *svc);
   void removeService(int32_t serverIf, int32_t handle);
   void clearServices(int32_t serverIf);

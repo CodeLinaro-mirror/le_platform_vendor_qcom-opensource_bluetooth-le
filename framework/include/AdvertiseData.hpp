@@ -42,11 +42,14 @@ namespace gatt{
 */
 class AdvertiseData final {
   private:
+    std::vector<uint8_t> mRawData;
     std::vector<Uuid> mServiceUuids;
     std::map<int, std::vector<uint8_t>> mManufacturerSpecificData;
     std::map<Uuid, std::vector<uint8_t>> mServiceData;
     const bool mIncludeTxPowerLevel;
     const bool mIncludeDeviceName;
+    bool mLocalNameShortened;
+    std::string mLocalName;
 
     AdvertiseData(std::vector<Uuid> serviceUuids,
            std::map<int, std::vector<uint8_t>> manufacturerData,
@@ -59,6 +62,8 @@ class AdvertiseData final {
     * Destructor
     */
     ~AdvertiseData();
+
+    std::vector<uint8_t> getRawData() { return mRawData; }
 
     /**
     * Returns a list of service UUIDs within the advertisement that are used to identify the
@@ -86,19 +91,25 @@ class AdvertiseData final {
     * Whether the device name will be included in the advertisement packet.
     */
     bool getIncludeDeviceName();
+    std::string getLocalName() { return mLocalName; }
+    bool getLocalNameShortened() { return mLocalNameShortened; }
 
     /**
     * Builder for  AdvertiseData.
     */
     class Builder final{
       private:
+        std::vector<uint8_t> mRawData;
         std::vector<Uuid> mServiceUuids;
         std::map<int, std::vector<uint8_t>> mManufacturerSpecificData;
         std::map<Uuid, std::vector<uint8_t>> mServiceData;
         bool mIncludeTxPowerLevel = false;
         bool mIncludeDeviceName = false;
+        bool mLocalNameShortened = false;
+        std::string mLocalName;
 
       public:
+        Builder setRawData(const std::vector<uint8_t> &data) { mRawData = data; return *this; }
         /**
         * Add a service UUID to advertise data.
         *
@@ -138,6 +149,8 @@ class AdvertiseData final {
         * Set whether the device name should be included in advertise packet.
         */
         Builder setIncludeDeviceName(bool includeDeviceName);
+        Builder setLocalNameShortened(bool localNameShortened) { mLocalNameShortened = localNameShortened; return *this; }
+        Builder setLocalName(const std::string localName) { mLocalName = localName; return *this; }
 
         /**
         * Build the AdvertiseData.

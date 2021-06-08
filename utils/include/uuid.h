@@ -106,8 +106,8 @@ class Uuid final {
   bool operator==(const Uuid& rhs) const;
   bool operator!=(const Uuid& rhs) const;
 
-  std::array<uint8_t,Uuid::kNumBytes16> As16BitBE() const;
-  std::array<uint8_t,Uuid::kNumBytes32> As32BitBE() const;
+  std::array<uint8_t,Uuid::kNumBytes16> As16BitLE() const;
+  std::array<uint8_t,Uuid::kNumBytes32> As32BitLE() const;
   static std::vector<uint8_t> uuidToByte(Uuid uuid);
 
  private:

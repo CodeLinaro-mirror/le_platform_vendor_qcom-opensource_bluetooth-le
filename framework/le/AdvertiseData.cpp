@@ -120,7 +120,11 @@ AdvertiseData::Builder AdvertiseData::Builder::setIncludeDeviceName(bool include
 
 AdvertiseData* AdvertiseData::Builder::build()
 {
-  return new AdvertiseData(mServiceUuids, mManufacturerSpecificData, mServiceData,
+  AdvertiseData *data = new AdvertiseData(mServiceUuids, mManufacturerSpecificData, mServiceData,
          mIncludeTxPowerLevel, mIncludeDeviceName);
+  data->mRawData = mRawData;
+  data->mLocalNameShortened = mLocalNameShortened;
+  data->mLocalName = mLocalName;
+  return data;
 }
 }//namespace gatt

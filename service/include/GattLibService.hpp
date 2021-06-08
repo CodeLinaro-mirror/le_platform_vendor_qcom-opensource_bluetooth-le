@@ -258,9 +258,9 @@ class GattLibService           {
     void removeService(int serverIf, int handle);
     void clearServices(int serverIf);
     void sendResponse(int serverIf, string address, int requestId, int status,
-            int offset, uint8_t *value);
+            int offset, uint8_t *value, int length);
     void sendNotification(int serverIf, string address, int handle, bool confirm,
-            uint8_t *value);
+            uint8_t *value, int length);
     void startAdvertisingSet(AdvertisingSetParameters *parameters,
                                     AdvertiseData *advertiseData, AdvertiseData *scanResponse,
                                     PeriodicAdvertiseParameters *periodicParameters,

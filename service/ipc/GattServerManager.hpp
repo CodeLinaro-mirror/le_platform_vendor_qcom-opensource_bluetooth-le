@@ -64,8 +64,8 @@ class GattServerManager {
     bool onRegisterServer(const std::string& uuid, const std::string& gattServerListener_sender);
     bool onUnregisterServer(int32_t serverId);
     bool onAddService(int32_t serverId, GattService *gatt_service);
-    bool onSendResponse(int32_t serverId, const std::string& deviceAddress, SdBus::ArgumentMap &args, uint8_t *value);
-    bool onSendNotification(int32_t serverId, const std::string& deviceAddress, SdBus::ArgumentMap &args, uint8_t *value);
+    bool onSendResponse(int32_t serverId, const std::string& deviceAddress, SdBus::ArgumentMap &args, uint8_t *value, size_t length);
+    bool onSendNotification(int32_t serverId, const std::string& deviceAddress, SdBus::ArgumentMap &args, uint8_t *value, size_t length);
 
 };
 } // namespace ipc

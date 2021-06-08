@@ -166,8 +166,7 @@ uint8_t* GattCharacteristic::getValue()
 
 int GattCharacteristic::getIntValue(int formatType, int offset)
 {
-  size_t mValueSize = strlen((char*)mValue);
-  if ((offset + getTypeLen(formatType)) > mValueSize) return INVALID_INT;
+  if ((offset + getTypeLen(formatType)) > mValueLength) return INVALID_INT;
 
   switch (formatType) {
     case FORMAT_UINT8:
@@ -196,8 +195,7 @@ int GattCharacteristic::getIntValue(int formatType, int offset)
 
 float GattCharacteristic::getFloatValue(int formatType, int offset)
 {
-  size_t mValueSize = strlen((char*)mValue);
-  if ((offset + getTypeLen(formatType)) > mValueSize) return INVALID_FLOAT;
+  if ((offset + getTypeLen(formatType)) > mValueLength) return INVALID_FLOAT;
 
   switch (formatType) {
     case FORMAT_SFLOAT:
@@ -213,14 +211,13 @@ float GattCharacteristic::getFloatValue(int formatType, int offset)
 
 string GattCharacteristic::getStringValue(int offset)
 {
-  size_t mValueSize = strlen((char*)mValue);
-  if (mValue == NULL || offset >mValueSize) return NULL;
+  if (mValue == NULL || offset >mValueLength) return NULL;
 
-  uint8_t strBytes[mValueSize - offset];
-  for (int i = 0; i != (mValueSize - offset); ++i)
+  uint8_t strBytes[mValueLength - offset];
+  for (int i = 0; i != (mValueLength - offset); ++i)
     strBytes[i] = mValue[offset + i];
 
-  return std::string(strBytes, strBytes+mValueSize);
+  return std::string(strBytes, strBytes+mValueLength);
 }
 
 int GattCharacteristic::getValueLength()
@@ -251,10 +248,7 @@ bool GattCharacteristic::setValue(int value, int formatType, int offset)
 
   if (mValue != NULL) delete [] mValue;
 
-  if (mValue == NULL) mValue = new uint8_t[len];
-  size_t mValueSize = strlen((char*)mValue);
-
-  if (len > mValueSize) return false;
+  mValue = new uint8_t[len];
 
   switch (formatType) {
     case FORMAT_SINT8:
@@ -292,10 +286,7 @@ bool GattCharacteristic::setValue(int mantissa, int exponent, int formatType, in
 
   if (mValue != NULL) delete [] mValue;
 
-  if (mValue == NULL) mValue = new uint8_t[len];
-  size_t mValueSize = strlen((char*)(mValue));
-
-  if (len > mValueSize) return false;
+  mValue = new uint8_t[len];
 
   switch (formatType) {
     case FORMAT_SFLOAT:
