@@ -99,7 +99,7 @@ int PopulateGattServiceMessage(sd_bus_message *message, gatt::GattService *svc) 
   return 1;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, bool value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, bool value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -124,7 +124,7 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, bool valu
   return 1;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, std::__cxx11::string value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, std::string value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -147,7 +147,7 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, std::__cx
   return 1;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, const std::vector<uint8_t> &value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, const std::vector<uint8_t> &value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -170,7 +170,7 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, const std
   return 1;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, uint32_t value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, uint32_t value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -197,7 +197,7 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, uint32_t 
   return r;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, int32_t value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, int32_t value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -301,7 +301,7 @@ int AppendDictEntry(sd_bus_message *message, std::string key, std::map<bt::Uuid,
   return 1;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, std::vector<gatt::GattService *> value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, std::vector<gatt::GattService *> value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
@@ -344,7 +344,7 @@ int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, std::vect
   return 1;
 }
 
-int AppendDictEntry(sd_bus_message *message, std::__cxx11::string key, std::vector<gatt::GattCharacteristic *> value) {
+int AppendDictEntry(sd_bus_message *message, std::string key, std::vector<gatt::GattCharacteristic *> value) {
   int r = sd_bus_message_open_container(message, SD_BUS_TYPE_DICT_ENTRY, "sv");
   if (r < 0)
     return r;
