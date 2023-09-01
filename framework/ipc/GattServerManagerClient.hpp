@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATTSERVERMANAGERCLIENT_HPP
 #define GATTSERVERMANAGERCLIENT_HPP
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <cstdint>
 #include "GattService.hpp"
 #include "IServerCallback.hpp"

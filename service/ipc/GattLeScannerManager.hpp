@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATTLESCANNERMANAGER_HPP
 #define GATTLESCANNERMANAGER_HPP
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <vector>
 
 namespace gatt {

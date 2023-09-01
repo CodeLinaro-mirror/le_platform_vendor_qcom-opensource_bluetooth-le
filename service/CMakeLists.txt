@@ -37,7 +37,7 @@ link_directories(
 target_link_libraries(
   ${PROJECT_NAME}
   le-gatt-utils
-  systemdq
+  systemd
 )
 
 target_include_directories(

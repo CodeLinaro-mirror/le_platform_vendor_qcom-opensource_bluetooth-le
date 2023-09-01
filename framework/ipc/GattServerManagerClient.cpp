@@ -28,7 +28,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "GattServerManagerClient.hpp"
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <cstdint>
 #include <memory>
 #include "BluetoothLeSdbus.hpp"

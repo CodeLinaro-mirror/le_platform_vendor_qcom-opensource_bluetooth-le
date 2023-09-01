@@ -36,7 +36,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IAdvertisingSetCallback.hpp"
 #include "IPeriodicAdvertisingCallback.hpp"
 #include "ScanResult.hpp"
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <string>
 #include <mutex>
 

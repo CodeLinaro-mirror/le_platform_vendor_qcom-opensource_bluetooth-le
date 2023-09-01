@@ -33,7 +33,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 
 using std::string;
 

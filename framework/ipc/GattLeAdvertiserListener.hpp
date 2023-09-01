@@ -31,7 +31,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GATTLEADVERTISERLISTENER_HPP
 
 #include <cstdint>
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 
 namespace gatt {
 namespace ipc {

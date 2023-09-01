@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATTSERVERDBUSSRV_H
 #define GATTSERVERDBUSSRV_H
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <thread>
 #include <memory>
 #include "GattDBusDefines.hpp"

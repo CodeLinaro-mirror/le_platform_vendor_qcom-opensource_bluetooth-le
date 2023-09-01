@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATTCLIENTLISTENER_H
 #define GATTCLIENTLISTENER_H
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <map>
 #include <memory>
 #include <string>

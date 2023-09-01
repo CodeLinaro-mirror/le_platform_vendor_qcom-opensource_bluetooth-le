@@ -28,7 +28,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "GattServerListener.hpp"
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <unistd.h>
 #include "BluetoothLeSdbus.hpp"
 #include "GattDBusFw.hpp"

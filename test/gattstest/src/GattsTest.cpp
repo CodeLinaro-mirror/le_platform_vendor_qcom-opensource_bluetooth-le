@@ -37,7 +37,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <iterator>
 #include <regex>
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 
 #include "GattsTest.hpp"
 #include "AdvertiseSettings.hpp"

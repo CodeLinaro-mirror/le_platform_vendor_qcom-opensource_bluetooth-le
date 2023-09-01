@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATT_CLIENT_MANAGER_H
 #define GATT_CLIENT_MANAGER_H
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <cstdint>
 #include <map>
 #include <memory>

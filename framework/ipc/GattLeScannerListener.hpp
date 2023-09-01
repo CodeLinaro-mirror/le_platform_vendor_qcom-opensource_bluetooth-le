@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATTLESCANNERLISTENER_HPP
 #define GATTLESCANNERLISTENER_HPP
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 
 namespace gatt {
 class ScanResult;

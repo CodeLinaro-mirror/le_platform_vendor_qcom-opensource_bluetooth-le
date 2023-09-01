@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATT_CLIENT_MANAGER_CLIENT_HPP
 #define GATT_CLIENT_MANAGER_CLIENT_HPP
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <cstdint>
 #include <string>
 #include "utils/include/uuid.h"

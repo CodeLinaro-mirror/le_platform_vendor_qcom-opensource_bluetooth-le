@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef BLUETOOTH_LE_SDBUS_HPP
 #define BLUETOOTH_LE_SDBUS_HPP
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <cstdint>
 #include <iostream>
 #include <map>

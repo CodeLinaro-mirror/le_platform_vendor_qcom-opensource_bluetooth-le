@@ -30,7 +30,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GATTLEADVERTISERMANAGER_HPP
 #define GATTLEADVERTISERMANAGER_HPP
 
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 #include <string>
 
 namespace gatt {

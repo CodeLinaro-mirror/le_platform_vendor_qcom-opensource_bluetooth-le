@@ -34,7 +34,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ScanSettings.hpp"
 #include "ScanFilter.hpp"
 #include "ResultStorageDescriptor.hpp"
-#include <systemdq/sd-bus.h>
+#include <systemd/sd-bus.h>
 
 namespace gatt {
 namespace ipc {
